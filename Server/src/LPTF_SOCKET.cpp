@@ -17,10 +17,33 @@ class LPTF_SOCKET
       }
     }
 
-    void acceptLptfSocket(SOCKET socket, sockaddr_in socketAdress)
+    int acceptLptfSocket()
     {
-     int socketAdressLen = sizeof(socketAdress);
-     SOCKET acceptedSocket = accept(socket, reinterpret_cast<sockaddr*>(&     socketAdress), &socketAdressLen);
+
+      int adressLen = sizeof(addr);
+
+      SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr*>
+      (&addr), &adressLen);
+
+      if (clientSocket == INVALID_SOCKET)
+      {
+        std::cerr << "accept failed with error: " 
+                  << WSAGetLastError()
+                  << std::endl;
+        closesocket(sockfd);
+        WSACleanup();
+        return 1;
+      }
+      else
+      {
+        wprintf(L"Client connected.\n");
+        closesocket(sockfd);
+        WSACleanup();
+        return 0;
+      }
+      
+      
+
     }
 
     void bind()
