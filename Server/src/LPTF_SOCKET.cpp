@@ -83,7 +83,7 @@ public:
       const timeval* timeout
     ) {
       int iResult = select(
-        0, 
+        0, // paramètre ignoré
         readFds, writeFds, exceptFds, 
         timeout
       );
