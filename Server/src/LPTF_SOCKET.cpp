@@ -11,10 +11,9 @@ class LPTF_SOCKET
   public:
     LPTF_SOCKET() {
       sockfd = socket(AF_INET, SOCK_STREAM, 0);
-      if (sockfd < 0)
+      if (sockfd == INVALID_SOCKET)
       {
-        printf("Echec cde la création du socket");
-        exit(EXIT_FAILURE);
+        std::cerr << "Fail to create socket: " << WSAGetLastError()<< std::endl;
       }
     }
 
@@ -31,7 +30,7 @@ class LPTF_SOCKET
 
     void connect()
     {
-
+      connect();
     }
 
     void listen()
