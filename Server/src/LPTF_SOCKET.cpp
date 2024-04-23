@@ -6,14 +6,12 @@
 
 class LPTF_SOCKET
 {
-private:
+  private:
     int sockfd;
     sockaddr_in addr;
     struct  sockaddr_in server;    
   
   public:
-
-public:
     LPTF_SOCKET() {
       sockfd = socket(AF_INET, SOCK_STREAM, 0);
       if (sockfd == INVALID_SOCKET) {
@@ -41,10 +39,6 @@ public:
       return 0;
     }
 
-    /**
-     * @param socket Un socket lié par la méthode ```bound()``` et non-connecté
-     * @param backlog La taille maximum de la queue pour les connexions en attente
-     */
     int listenLPTFSocket() {
       // On essaye d'écouter avec le socket de la classe et la taille 
       // de file d'attente maximum
@@ -67,8 +61,21 @@ public:
     {
     }
 
-    void recv()
-    {
+    /**
+     * @param socket Le socket client connecté
+     * @param buffer Le buffer de données
+    */
+    int recvLPTFSocket(SOCKET socket, char* buffer) {
+      int iResult = recv(socket, buffer, sizeof(buffer), MSG_PEEK);
+      if(iResult != 0) {
+        std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() <<
+        std::endl;
+
+        return 1;
+      }
+
+      std::cout << "Data successfully received" << std::endl;
+      return 0;
     }
 
     void send()
