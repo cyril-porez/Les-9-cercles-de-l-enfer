@@ -21,8 +21,33 @@ public:
       }
     }
 
-    void accept()
+    int acceptLptfSocket()
     {
+
+      int adressLen = sizeof(addr);
+
+      SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr*>
+      (&addr), &adressLen);
+
+      if (clientSocket == INVALID_SOCKET)
+      {
+        std::cerr << "accept failed with error: " 
+                  << WSAGetLastError()
+                  << std::endl;
+        closesocket(sockfd);
+        WSACleanup();
+        return 1;
+      }
+      else
+      {
+        wprintf(L"Client connected.\n");
+        closesocket(sockfd);
+        WSACleanup();
+        return 0;
+      }
+      
+      
+
     }
 
     void bind()
