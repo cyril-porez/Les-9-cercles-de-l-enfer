@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-#include <sys/socket.h>
+#include <winsock2.h>
 
 class LPTF_SOCKET
 {
@@ -57,4 +57,4 @@ class LPTF_SOCKET
     {
       
     }
-}
+};
