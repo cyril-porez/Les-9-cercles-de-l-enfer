@@ -41,8 +41,6 @@ public:
       else
       {
         wprintf(L"Client connected.\n");
-        closesocket(sockfd);
-        WSACleanup();
         return 0;
       }
       
