@@ -18,9 +18,10 @@ class LPTF_SOCKET
       }
     }
 
-    void accept()
+    void acceptLptfSocket(SOCKET socket, sockaddr_in socketAdress)
     {
-
+     int socketAdressLen = sizeof(socketAdress);
+     SOCKET acceptedSocket = accept(socket, reinterpret_cast<sockaddr*>(&     socketAdress), &socketAdressLen);
     }
 
     void bind()
