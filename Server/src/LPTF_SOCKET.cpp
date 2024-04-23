@@ -9,7 +9,8 @@ class LPTF_SOCKET
   private:
     int sockfd;
     sockaddr_in addr;
-    struct  sockaddr_in server;    
+    struct  sockaddr_in server;  
+    sockaddr_in service;  
   
   public:
     LPTF_SOCKET() {
@@ -41,13 +42,18 @@ class LPTF_SOCKET
         wprintf(L"Client connected.\n");
         return 0;
       }
-      
-      
-
     }
 
-    void bind()
+    int bindLPTFSOCKET()
     {
+      if(bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
+      {
+        std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
+        closesocket(sockfd);
+        return 1;
+      }
+      std::cerr << "bind returned success" << std::endl;
+      return 0;
     }
 
     int connectLPTFSocket()
@@ -59,6 +65,7 @@ class LPTF_SOCKET
         WSACleanup();
         return 1;
       }
+      std::cerr << "connect returned success" << std::endl;
       return 0;
     }
 
