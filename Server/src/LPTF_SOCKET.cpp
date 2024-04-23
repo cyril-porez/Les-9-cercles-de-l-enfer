@@ -33,9 +33,13 @@ class LPTF_SOCKET
 
     }
 
-    void listen()
-    {
-
+    /**
+     * @param socket Un socket lié (bound) et non-connecté
+     * @param backlog La taille maximum de la queue pour les connexions en attente
+    */
+    void listenLPTFSocket(SOCKET socket, int backlog) {
+        if(listen(socket, backlog) == SOCKET_ERROR) 
+            printf("listenLPTFSocket() function failed with error %d\n", WSAGetLastError());
     }
 
     void select()
