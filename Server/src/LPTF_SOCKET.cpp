@@ -7,6 +7,7 @@ class LPTF_SOCKET
   private:
     int sockfd;
     sockaddr_in addr;
+    struct  sockaddr_in server;    
   
   public:
     LPTF_SOCKET() {
@@ -27,9 +28,16 @@ class LPTF_SOCKET
 
     }
 
-    void connect()
+    int connectLPTFSocket()
     {
-      connect();
+      if(connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
+      {
+        std::cerr << "Connection fail : " << WSAGetLastError << std::endl;
+        closesocket(sockfd);
+        WSACleanup();
+        return 1;
+      }
+      return 0;
     }
 
     void listen()
