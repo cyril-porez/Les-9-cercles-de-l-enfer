@@ -62,7 +62,7 @@ class LPTF_SOCKET
     }
 
     /**
-     * @param socket Le socket client connecté
+     * @param socket Le socket connecté
      * @param buffer Le buffer de données
     */
     int recvLPTFSocket(SOCKET socket, char* buffer) {
