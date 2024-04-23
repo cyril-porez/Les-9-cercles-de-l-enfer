@@ -6,14 +6,13 @@
 
 class LPTF_SOCKET
 {
-private:
+  private:
     int sockfd;
     sockaddr_in addr;
-    struct  sockaddr_in server;    
+    struct  sockaddr_in server;  
+    sockaddr_in service;  
   
   public:
-
-public:
     LPTF_SOCKET() {
       sockfd = socket(AF_INET, SOCK_STREAM, 0);
       if (sockfd == INVALID_SOCKET) {
@@ -43,13 +42,18 @@ public:
         wprintf(L"Client connected.\n");
         return 0;
       }
-      
-      
-
     }
 
-    void bind()
+    int bindLPTFSOCKET()
     {
+      if(bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
+      {
+        std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
+        closesocket(sockfd);
+        return 1;
+      }
+      std::cerr << "bind returned success" << std::endl;
+      return 0;
     }
 
     int connectLPTFSocket()
@@ -61,6 +65,7 @@ public:
         WSACleanup();
         return 1;
       }
+      std::cerr << "connect returned success" << std::endl;
       return 0;
     }
 
@@ -99,8 +104,21 @@ public:
     {
     }
 
-    void recv()
-    {
+    /**
+     * @param socket Le socket connecté
+     * @param buffer Le buffer de données
+    */
+    int recvLPTFSocket(SOCKET socket, char* buffer) {
+      int iResult = recv(socket, buffer, sizeof(buffer), MSG_PEEK);
+      if(iResult != 0) {
+        std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() <<
+        std::endl;
+
+        return 1;
+      }
+
+      std::cout << "Data successfully received" << std::endl;
+      return 0;
     }
 
     void send()
