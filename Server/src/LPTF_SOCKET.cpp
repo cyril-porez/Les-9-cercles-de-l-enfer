@@ -83,8 +83,21 @@ class LPTF_SOCKET
       }
     }
 
-    void select()
-    {
+    int selectLPTFSocket(
+      fd_set* readFds, fd_set* writeFds, fd_set* exceptFds,
+      const timeval* timeout
+    ) {
+      int iResult = select(
+        0, // paramètre ignoré
+        readFds, writeFds, exceptFds, 
+        timeout
+      );
+      if(iResult != 0) {
+        std::cout << "selectLPTFSocket() failed: " << iResult << std::endl;
+        return 1;
+      }
+
+      return 0;
     }
 
     void read()
