@@ -65,6 +65,7 @@ class LPTF_SOCKET
         WSACleanup();
         return 1;
       }
+      std::cerr << "connect returned success" << std::endl;
       return 0;
     }
 
