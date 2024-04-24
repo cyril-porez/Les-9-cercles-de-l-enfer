@@ -1,21 +1,27 @@
 #include "LPTF_SOCKET.cpp"
 #include <iostream>
 
-int main() {
+int main()
+{
+  LPTF_SOCKET serverSocket;
 
-    /**
-     * INITIALISATION
-    */
-    WSAData wsaData;
-    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if(iResult != 0) {
-        printf("WSAStartup failed: %d\n", iResult);
-        return 1;
-    }
+  serverSocket.setUpService(12345);
 
-    // FAIRE LES TESTS ICI
-    std::cout << "test serveur" << std::endl; 
+  if (serverSocket.bindLPTFSocket() != 0)
+  {
+    std::cerr << "Binding Failed. " << std::endl;
+    return 1;
+  }
 
-    // On ferme et nettoie WSA
-    WSACleanup();
+  if (serverSocket.listenLPTFSocket() != 0)
+  {
+    std::cerr << "Listening Failed. " << std::endl;
+    return 1;
+  }
+
+  if (serverSocket.acceptLPTFSocket() != 0)
+  {
+    std::cerr << "Accepting Failed." << std::endl;
+    return 1;
+  }
 }

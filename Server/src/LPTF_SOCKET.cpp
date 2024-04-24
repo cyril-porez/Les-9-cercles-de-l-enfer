@@ -2,15 +2,27 @@
 
 LPTF_SOCKET::LPTF_SOCKET()
 {
+  WSAData wsaData;
+  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+  if (iResult != 0)
+  {
+    std::cerr << "WSAStartup failed: " << iResult << std::endl;
+    exit(1);
+  }
+
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd == INVALID_SOCKET)
   {
     std::cerr << "Fail to create socket: " << WSAGetLastError() << std::endl;
+    WSACleanup();
+    exit(1);
   }
 }
 
 LPTF_SOCKET::~LPTF_SOCKET()
 {
+  closesocket(sockfd);
+  WSACleanup();
 }
 
 int LPTF_SOCKET::acceptLPTFSocket()
