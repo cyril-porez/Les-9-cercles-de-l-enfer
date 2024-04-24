@@ -20,10 +20,10 @@ SERVER_EXEC := ./Server/bin/server.exe
 all: $(CLIENT_EXEC) $(SERVER_EXEC)
 
 $(CLIENT_EXEC): $(CLIENT_OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(SERVER_EXEC): $(SERVER_OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(CLIENT_OBJ_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
