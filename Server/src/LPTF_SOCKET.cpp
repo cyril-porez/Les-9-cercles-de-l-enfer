@@ -101,10 +101,6 @@ class LPTF_SOCKET
       return 0;
     }
 
-    void read()
-    {
-    }
-
     /**
      * @param socket Le socket connecté
      * @param buffer Le buffer de données
