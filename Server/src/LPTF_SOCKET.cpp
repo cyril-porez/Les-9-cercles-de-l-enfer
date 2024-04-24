@@ -11,6 +11,7 @@ class LPTF_SOCKET
     sockaddr_in addr;
     struct  sockaddr_in server;  
     sockaddr_in service;  
+    char *sendbuf = "Client: sending data test";
   
   public:
     LPTF_SOCKET() {
@@ -121,8 +122,18 @@ class LPTF_SOCKET
       return 0;
     }
 
-    void send()
+    int sendLPTFSocket()
     {
+      if(send(sockfd, sendbuf, (int)strlen(sendbuf), 0) == SOCKET_ERROR)
+      {
+        std::cerr << "Send failed : " << WSAGetLastError() << std::endl; 
+        closesocket(sockfd);
+        WSACleanup();
+        closesocket(sockfd);
+        return 1;
+      }
+      std::cout << "send Successfully" << std::endl;
+      return 0;
     }
 
     SOCKET getSocket()
