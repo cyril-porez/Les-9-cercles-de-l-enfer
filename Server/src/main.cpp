@@ -1,4 +1,5 @@
 #include "LPTF_SOCKET.cpp"
+#include <iostream>
 
 int main() {
 
@@ -13,6 +14,7 @@ int main() {
     }
 
     // FAIRE LES TESTS ICI
+    std::cout << "test serveur" << std::endl; 
 
     // On ferme et nettoie WSA
     WSACleanup();
