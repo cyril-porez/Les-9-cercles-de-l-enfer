@@ -23,7 +23,6 @@ class LPTF_SOCKET
 
     int acceptLptfSocket()
     {
-
       int adressLen = sizeof(addr);
 
       SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr*>

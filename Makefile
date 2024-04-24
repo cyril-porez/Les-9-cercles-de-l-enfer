@@ -1,5 +1,5 @@
 CC := g++
-CFLAGS := -std=c++23 -Wall -I./Client/include -I./Server/include 
+CFLAGS := -Wall -I./Client/include -I./Server/include 
 LDFLAGS := -lws2_32
 
 CLIENT_SRC_DIR := ./Client/src
@@ -12,8 +12,8 @@ SERVER_OBJ_DIR := ./Server/obj
 SERVER_SRC := $(wildcard $(SERVER_SRC_DIR)/*.cpp)
 SERVER_OBJ := $(patsubst $(SERVER_SRC_DIR)/%.cpp, $(SERVER_OBJ_DIR)/%.o, $(SERVER_SRC))
 
-CLIENT_EXEC := client.exe
-SERVER_EXEC := server.exe
+CLIENT_EXEC := ./Client/bin/client.exe
+SERVER_EXEC := ./Server/bin/server.exe
 
 .PHONY: all clean run
 
