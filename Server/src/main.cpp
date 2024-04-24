@@ -1,4 +1,4 @@
-#include "LPTF_SOCKET.cpp"
+#include "LPTF_SOCKET.hpp"
 #include <iostream>
 
 int main() {
