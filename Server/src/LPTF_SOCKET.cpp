@@ -1,139 +1,132 @@
-#include <iostream>
-#include <string.h>
-#include <winsock2.h>
+#include "LPTF_SOCKET.hpp"
 
-#pragma comment(lib, "Ws2_32.lib")
-
-class LPTF_SOCKET
+LPTF_SOCKET::LPTF_SOCKET()
 {
-  private:
-    int sockfd;
-    sockaddr_in addr;
-    struct  sockaddr_in server;  
-    sockaddr_in service;  
-    char *sendbuf = "Client: sending data test";
-  
-  public:
-    LPTF_SOCKET() {
-      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-      if (sockfd == INVALID_SOCKET) {
-        std::cerr << "Fail to create socket: " << WSAGetLastError() <<std::endl;
-      }
-    }
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd == INVALID_SOCKET)
+  {
+    std::cerr << "Fail to create socket: " << WSAGetLastError() << std::endl;
+  }
+}
 
-    int acceptLptfSocket()
-    {
+LPTF_SOCKET::~LPTF_SOCKET()
+{
+}
 
-      int adressLen = sizeof(addr);
+int LPTF_SOCKET::acceptLPTFSocket()
+{
 
-      SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr*>
-      (&addr), &adressLen);
+  int adressLen = sizeof(addr);
 
-      if (clientSocket == INVALID_SOCKET)
-      {
-        std::cerr << "accept failed with error: " 
-                  << WSAGetLastError()
-                  << std::endl;
-        closesocket(sockfd);
-        WSACleanup();
-        return 1;
-      }
-      else
-      {
-        wprintf(L"Client connected.\n");
-        return 0;
-      }
-    }
+  SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
 
-    int bindLPTFSOCKET()
-    {
-      if(bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
-      {
-        std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
-        closesocket(sockfd);
-        return 1;
-      }
-      std::cerr << "bind returned success" << std::endl;
-      return 0;
-    }
+  if (clientSocket == INVALID_SOCKET)
+  {
+    std::cerr << "accept failed with error: "
+              << WSAGetLastError()
+              << std::endl;
+    closesocket(sockfd);
+    WSACleanup();
+    return 1;
+  }
+  else
+  {
+    wprintf(L"Client connected.\n");
+    return 0;
+  }
+}
 
-    int connectLPTFSocket()
-    {
-      if(connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
-      {
-        std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
-        closesocket(sockfd);
-        WSACleanup();
-        return 1;
-      }
-      std::cerr << "connect returned success" << std::endl;
-      return 0;
-    }
+int LPTF_SOCKET::bindLPTFSocket()
+{
+  if (bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
+  {
+    std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
+    closesocket(sockfd);
+    return 1;
+  }
+  std::cerr << "bind returned success" << std::endl;
+  return 0;
+}
 
-    int listenLPTFSocket() {
-      // On essaye d'écouter avec le socket de la classe et la taille 
-      // de file d'attente maximum
-      if (listen(this->sockfd, SOMAXCONN) == SOCKET_ERROR)
-      {
-        std::cerr << "Listen failed : " << WSAGetLastError() << std::endl;
-        return 1;
-      }
-      else {
-        printf("Listening of socket...");
-        return 0;
-      }
-    }
+int LPTF_SOCKET::connectLPTFSocket()
+{
+  if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
+  {
+    std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
+    closesocket(sockfd);
+    WSACleanup();
+    return 1;
+  }
+  std::cerr << "connect returned success" << std::endl;
+  return 0;
+}
 
-    int selectLPTFSocket(
-      fd_set* readFds, fd_set* writeFds, fd_set* exceptFds,
-      const timeval* timeout
-    ) {
-      int iResult = select(
-        0, // paramètre ignoré
-        readFds, writeFds, exceptFds, 
-        timeout
-      );
-      if(iResult != 0) {
-        std::cout << "selectLPTFSocket() failed: " << iResult << std::endl;
-        return 1;
-      }
+int LPTF_SOCKET::listenLPTFSocket()
+{
+  // On essaye d'écouter avec le socket de la classe et la taille
+  // de file d'attente maximum
+  if (listen(this->sockfd, SOMAXCONN) == SOCKET_ERROR)
+  {
+    std::cerr << "Listen failed : " << WSAGetLastError() << std::endl;
+    return 1;
+  }
+  else
+  {
+    printf("Listening of socket...");
+    return 0;
+  }
+}
 
-      return 0;
-    }
+int LPTF_SOCKET::selectLPTFSocket(
+    fd_set *readFds, fd_set *writeFds, fd_set *exceptFds,
+    const timeval *timeout)
+{
+  int iResult = select(
+      0, // paramètre ignoré
+      readFds, writeFds, exceptFds,
+      timeout);
+  if (iResult != 0)
+  {
+    std::cout << "selectLPTFSocket() failed: " << iResult << std::endl;
+    return 1;
+  }
 
-    /**
-     * @param socket Le socket connecté
-     * @param buffer Le buffer de données
-    */
-    int recvLPTFSocket(SOCKET socket, char* buffer) {
-      int iResult = recv(socket, buffer, sizeof(buffer), MSG_PEEK);
-      if(iResult != 0) {
-        std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() <<
-        std::endl;
+  return 0;
+}
 
-        return 1;
-      }
+/**
+ * @param socket Le socket connecté
+ * @param buffer Le buffer de données
+ */
+int LPTF_SOCKET::recvLPTFSocket(SOCKET socket, char *buffer)
+{
+  int iResult = recv(socket, buffer, sizeof(buffer), MSG_PEEK);
+  if (iResult != 0)
+  {
+    std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
 
-      std::cout << "Data successfully received" << std::endl;
-      return 0;
-    }
+    return 1;
+  }
 
-    int sendLPTFSocket()
-    {
-      if(send(sockfd, sendbuf, (int)strlen(sendbuf), 0) == SOCKET_ERROR)
-      {
-        std::cerr << "Send failed : " << WSAGetLastError() << std::endl; 
-        closesocket(sockfd);
-        WSACleanup();
-        closesocket(sockfd);
-        return 1;
-      }
-      std::cout << "send Successfully" << std::endl;
-      return 0;
-    }
+  std::cout << "Data successfully received" << std::endl;
+  return 0;
+}
 
-    SOCKET getSocket()
-    {
-        return this->sockfd;
-    }
-};
+int LPTF_SOCKET::sendLPTFSocket()
+{
+  if (send(sockfd, sendbuf.c_str(), static_cast<int>(sendbuf.length()), 0) == SOCKET_ERROR)
+  {
+    std::cerr << "Send failed : " << WSAGetLastError() << std::endl;
+    closesocket(sockfd);
+    WSACleanup();
+    closesocket(sockfd);
+    return 1;
+  }
+  std::cout << "send Successfully" << std::endl;
+  return 0;
+}
+
+SOCKET LPTF_SOCKET::getSocket()
+{
+  return this->sockfd;
+}
