@@ -17,7 +17,7 @@ SERVER_EXEC := ./Server/bin/server.exe
 
 .PHONY: all clean run
 
-all: $(CLIENT_EXEC) $(SERVER_EXEC)
+all: $(SERVER_EXEC) $(CLIENT_EXEC)
 
 $(CLIENT_EXEC): $(CLIENT_OBJ)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)

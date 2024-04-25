@@ -138,6 +138,23 @@ int LPTF_SOCKET::sendLPTFSocket(const std::string &message)
   return 0;
 }
 
+int LPTF_SOCKET::closeLPTFSocket(SOCKET socket)
+{
+  int iResult = closesocket(socket);
+  if(iResult == SOCKET_ERROR){
+    std::cout << "closesocket failed with error: " 
+              << WSAGetLastError() 
+              << std::endl;
+    return 1;
+  }
+  else
+  {
+    std::cout << "closesocket Successfully" << std::endl;
+    return 0;
+  }
+  
+}
+
 SOCKET LPTF_SOCKET::getSocket()
 {
   return this->sockfd;
