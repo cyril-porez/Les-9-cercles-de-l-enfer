@@ -17,7 +17,7 @@ private:
 public:
   LPTF_SOCKET();
   ~LPTF_SOCKET();
-  void setUpService(int port, const std::string &ip = "0.0.0.0");
+  void setUpService(const std::string &ip, int port, bool isServer = false);
   int acceptLPTFSocket();
   int bindLPTFSocket();
   int connectLPTFSocket();
@@ -26,15 +26,23 @@ public:
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
   int recvLPTFSocket(SOCKET socket, char *buffer);
-  int sendLPTFSocket();
+  int sendLPTFSocket(const std::string &message);
   SOCKET getSocket();
 };
 
-void LPTF_SOCKET::setUpService(int port, const std::string &ip)
+void LPTF_SOCKET::setUpService(const std::string &ip, int port, bool isServer)
 {
   service.sin_family = AF_INET;
   service.sin_port = htons(port);
-  service.sin_addr.s_addr = inet_addr(ip.c_str());
+
+  if (isServer)
+  {
+    service.sin_addr.s_addr = INADDR_ANY;
+  }
+  else
+  {
+    service.sin_addr.s_addr = inet_addr(ip.c_str());
+  }
   memset(service.sin_zero, 0, sizeof(service.sin_zero));
 }
 

@@ -124,7 +124,7 @@ int LPTF_SOCKET::recvLPTFSocket(SOCKET socket, char *buffer)
   return 0;
 }
 
-int LPTF_SOCKET::sendLPTFSocket()
+int LPTF_SOCKET::sendLPTFSocket(const std::string &message)
 {
   if (send(sockfd, sendbuf.c_str(), static_cast<int>(sendbuf.length()), 0) == SOCKET_ERROR)
   {
