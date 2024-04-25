@@ -4,7 +4,7 @@
 int main()
 {
   LPTF_SOCKET clientSocket;
-  clientSocket.setUpService("127.0.0.1", 12345, true);
+  clientSocket.setUpService("127.0.0.1", 12345, false);
 
   if (clientSocket.connectLPTFSocket() != 0)
   {
