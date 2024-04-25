@@ -27,6 +27,7 @@ class LPTF_SOCKET {
     );
     int recvLPTFSocket(SOCKET socket, char* buffer);
     int sendLPTFSocket();
+    int closeLPTFSocket(SOCKET socket);
     SOCKET getSocket();
 };
 
