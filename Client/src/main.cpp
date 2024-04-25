@@ -35,5 +35,7 @@ int main()
   }
 
   std::cout << "Received from server: " << std::endl;
+
+  clientSocket.closeLPTFSocket(clientSocket.getSocket());
   return 0;
 }

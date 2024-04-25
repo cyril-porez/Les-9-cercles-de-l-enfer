@@ -44,5 +44,6 @@ int main()
     }
   }
 
+  serverSocket.closeLPTFSocket(serverSocket.getSocket());
   return 0;
 }
