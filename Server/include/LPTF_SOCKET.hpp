@@ -8,7 +8,7 @@
 class LPTF_SOCKET
 {
 private:
-  SOCKET sockfd;
+  SOCKET sockfd, clientSock;
   struct sockaddr_in service, server, addr;
   std::string sendbuf;
 
@@ -23,9 +23,9 @@ public:
   int selectLPTFSocket(
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
-  int recvLPTFSocket(SOCKET socket, char *buffer);
-  int sendLPTFSocket(const std::string &message);
-  int closeLPTFSocket(SOCKET socket);
+  int recvLPTFSocket(char *buffer, int bufferSize, bool isServer);
+  int sendLPTFSocket(const std::string &message, bool isServer);
+  int closeLPTFSocket(bool isServer);
   SOCKET getSocket();
 };
 

@@ -27,12 +27,10 @@ LPTF_SOCKET::~LPTF_SOCKET()
 
 int LPTF_SOCKET::acceptLPTFSocket()
 {
-
   int adressLen = sizeof(addr);
+  clientSock = accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
 
-  SOCKET clientSocket = accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
-
-  if (clientSocket == INVALID_SOCKET)
+  if (clientSock == INVALID_SOCKET)
   {
     std::cerr << "accept failed with error: "
               << WSAGetLastError()
@@ -62,9 +60,8 @@ int LPTF_SOCKET::bindLPTFSocket()
 
 int LPTF_SOCKET::connectLPTFSocket()
 {
-  if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) == SOCKET_ERROR)
+  if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
   {
-    std::cout << sockfd << std::endl;
     std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
     closesocket(sockfd);
     WSACleanup();
@@ -111,49 +108,66 @@ int LPTF_SOCKET::selectLPTFSocket(
  * @param socket Le socket connecté
  * @param buffer Le buffer de données
  */
-int LPTF_SOCKET::recvLPTFSocket(SOCKET socket, char *buffer)
+int LPTF_SOCKET::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
 {
-  int iResult = recv(socket, buffer, sizeof(buffer), MSG_PEEK);
-  if (iResult != 0)
+  SOCKET usedSocket = isServer ? clientSock : sockfd;
+  int iResult = recv(usedSocket, buffer, bufferSize, MSG_PEEK);
+  if (iResult < 0)
   {
     std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
-
-    return 1;
+    return -1;
+  }
+  else if (iResult == 0)
+  {
+    std::cerr << "Connection closed by peer." << std::endl;
+    return 0;
   }
 
+  buffer[iResult] = '\0';
   std::cout << "Data successfully received" << std::endl;
-  return 0;
+  return iResult;
 }
 
-int LPTF_SOCKET::sendLPTFSocket(const std::string &message)
+int LPTF_SOCKET::sendLPTFSocket(const std::string &message, bool isServer)
 {
-  if (send(sockfd, sendbuf.c_str(), static_cast<int>(sendbuf.length()), 0) == SOCKET_ERROR)
+  SOCKET usedSocket = isServer ? clientSock : sockfd;
+  if (send(usedSocket, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
   {
     std::cerr << "Send failed : " << WSAGetLastError() << std::endl;
-    closesocket(sockfd);
-    WSACleanup();
-    closesocket(sockfd);
     return 1;
   }
   std::cout << "send Successfully" << std::endl;
   return 0;
 }
 
-int LPTF_SOCKET::closeLPTFSocket(SOCKET socket)
+int LPTF_SOCKET::closeLPTFSocket(bool isServer)
 {
-  int iResult = closesocket(socket);
-  if (iResult == SOCKET_ERROR)
+  if (isServer && clientSock != INVALID_SOCKET)
   {
-    std::cout << "closesocket failed with error: "
-              << WSAGetLastError()
-              << std::endl;
-    return 1;
+    int result = closesocket(clientSock);
+    if (result == SOCKET_ERROR)
+    {
+      std::cerr << "Failed to close client socket: " << WSAGetLastError() << std::endl;
+      return 1;
+    }
+    clientSock = INVALID_SOCKET;
+    std::cout << "Client socket closed successfully." << std::endl;
   }
-  else
+
+  if (sockfd != INVALID_SOCKET)
   {
+    int iResult = closesocket(sockfd);
+    if (iResult == SOCKET_ERROR)
+    {
+      std::cout << "closesocket failed with error: "
+                << WSAGetLastError()
+                << std::endl;
+      return 1;
+    }
+    sockfd = INVALID_SOCKET;
     std::cout << "closesocket Successfully" << std::endl;
-    return 0;
   }
+  return 0;
 }
 
 SOCKET LPTF_SOCKET::getSocket()
@@ -163,17 +177,16 @@ SOCKET LPTF_SOCKET::getSocket()
 
 void LPTF_SOCKET::setUpService(const std::string &ip, int port, bool isServer)
 {
-  service.sin_family = AF_INET;
-  service.sin_port = htons(port);
+  server.sin_family = AF_INET;
+  server.sin_port = htons(port);
 
   if (isServer)
   {
-    service.sin_addr.s_addr = INADDR_ANY;
+    server.sin_addr.s_addr = INADDR_ANY;
   }
   else
   {
-    service.sin_addr.s_addr = inet_addr(ip.c_str());
+    server.sin_addr.s_addr = inet_addr(ip.c_str());
   }
-  // memset(service.sin_zero, 0, sizeof(service.sin_zero));
-  std::cout << inet_addr(ip.c_str()) << std::endl;
+  memset(server.sin_zero, 0, sizeof(service.sin_zero));
 }
