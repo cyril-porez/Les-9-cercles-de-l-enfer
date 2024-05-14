@@ -1,18 +1,21 @@
-CXX := g++
-CXXFLAGS := -I./Common/include -I./Server/include -I./Client/include
+CC := g++
+CFLAGS := -Wall -Wextra -I.\Common\include -I.\Server\include -I.\Client\include
 LDFLAGS := -lws2_32
 
 CLIENT_SRC_DIR := ./Client/src
+CLIENT_INC_DIR := .Client/include
 CLIENT_BUILD_DIR := ./Client/build
 CLIENT_BIN_DIR := ./Client/bin
-CLIENT_EXE := ./Client/bin/client.exe
+CLIENT_EXE := $(CLIENT_BIN_DIR)/client.exe
 
 SERVER_SRC_DIR := ./Server/src
+CLIENT_INC_DIR := ./Server/include
 SERVER_BUILD_DIR := ./Server/build
 SERVER_BIN_DIR := ./Server/bin
-SERVER_EXE := ./Server/bin/server.exe
+SERVER_EXE := $(SERVER_BIN_DIR)/server.exe
 
 COMMON_SRC_DIR := ./Common/src
+COMMON_INC_DIR := ./Common/include
 COMMON_BUILD_DIR := ./Common/build
 
 CLIENT_SRCS := $(wildcard $(CLIENT_SRC_DIR)/*.cpp)
@@ -22,34 +25,37 @@ SERVER_SRCS := $(wildcard $(SERVER_SRC_DIR)/*.cpp)
 SERVER_OBJS := $(patsubst $(SERVER_SRC_DIR)/%.cpp,$(SERVER_BUILD_DIR)/%.o,$(SERVER_SRCS))
 
 COMMON_SRCS := $(wildcard $(COMMON_SRC_DIR)/*.cpp)
+COMMON_OBJS := $(patsubst $(COMMON_SRC_DIR)/%.cpp,$(COMMON_BUILD_DIR)/%.o,$(COMMON_SRCS))
 
 .PHONY: all clean fclean dirs
 
-all: client server
+all: server client
 
 client: $(CLIENT_EXE)
-
 server: $(SERVER_EXE)
 
-$(CLIENT_EXE): $(CLIENT_OBJS) | $(CLIENT_BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $(CLIENT_OBJS) $(LDFLAGS)
+$(CLIENT_EXE): $(CLIENT_OBJS) $(COMMON_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(CLIENT_OBJS) $(COMMON_OBJS) $(LDFLAGS)
 
-$(SERVER_EXE): $(SERVER_OBJS) | $(SERVER_BIN_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ $(SERVER_OBJS) $(LDFLAGS)
+$(SERVER_EXE): $(SERVER_OBJS) $(COMMON_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(SERVER_OBJS) $(COMMON_OBJS) $(LDFLAGS)
+
+$(CLIENT_BUILD_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp $(CLIENT_INC_DIR)/%.hpp
+	$(CC) -c $(CFLAGS) $< -o $@ 
+		
+$(CLIENT_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp $(COMMON_INC_DIR)/%.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
-$(CLIENT_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+$(SERVER_BUILD_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp $(CLIENT_INC_DIR)/%.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
-$(CLIENT_BUILD_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+$(SERVER_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp $(COMMON_INC_DIR)/%.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
-$(SERVER_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRS) -o $@;
-
-$(SERVER_BUILD_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp 
-	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+$(COMMON_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp $(COMMON_INC_DIR)/%.hpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 dirs:
@@ -57,6 +63,7 @@ dirs:
 	mkdir "$(CLIENT_BIN_DIR)"; 
 	mkdir "$(SERVER_BUILD_DIR)"; 
 	mkdir "$(SERVER_BIN_DIR)";
+	mkdir "$(COMMON_BUILD_DIR)";
 
 clean:
 	rm -r $(CLIENT_BUILD_DIR) $(SERVER_BUILD_DIR);
