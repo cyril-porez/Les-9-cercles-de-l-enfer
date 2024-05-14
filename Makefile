@@ -1,51 +1,67 @@
-CC := g++
-CFLAGS := -Wall -I./Client/include -I./Server/include -I./Common/include
+CXX := g++
+CXXFLAGS := -I./Common/include -I./Server/include -I./Client/include
 LDFLAGS := -lws2_32
 
 CLIENT_SRC_DIR := ./Client/src
-CLIENT_OBJ_DIR := ./Client/obj
+CLIENT_BUILD_DIR := ./Client/build
 CLIENT_BIN_DIR := ./Client/bin
-CLIENT_SRC := $(wildcard $(CLIENT_SRC_DIR)/*.cpp)
-CLIENT_OBJ := $(patsubst $(CLIENT_SRC_DIR)/%.cpp, $(CLIENT_OBJ_DIR)/%.o, $(CLIENT_SRC))
+CLIENT_EXE := ./Client/bin/client.exe
 
 SERVER_SRC_DIR := ./Server/src
-SERVER_OBJ_DIR := ./Server/obj
+SERVER_BUILD_DIR := ./Server/build
 SERVER_BIN_DIR := ./Server/bin
-SERVER_SRC := $(wildcard $(SERVER_SRC_DIR)/*.cpp)
-SERVER_OBJ := $(patsubst $(SERVER_SRC_DIR)/%.cpp, $(SERVER_OBJ_DIR)/%.o, $(SERVER_SRC))
+SERVER_EXE := ./Server/bin/server.exe
 
 COMMON_SRC_DIR := ./Common/src
+COMMON_BUILD_DIR := ./Common/build
 
-CLIENT_EXEC := $(CLIENT_BIN_DIR)/client.exe
-SERVER_EXEC := $(SERVER_BIN_DIR)/server.exe
+CLIENT_SRCS := $(wildcard $(CLIENT_SRC_DIR)/*.cpp)
+CLIENT_OBJS := $(patsubst $(CLIENT_SRC_DIR)/%.cpp,$(CLIENT_BUILD_DIR)/%.o,$(CLIENT_SRCS))
 
-.PHONY: all clean run
+SERVER_SRCS := $(wildcard $(SERVER_SRC_DIR)/*.cpp)
+SERVER_OBJS := $(patsubst $(SERVER_SRC_DIR)/%.cpp,$(SERVER_BUILD_DIR)/%.o,$(SERVER_SRCS))
 
-all: $(SERVER_EXEC) $(CLIENT_EXEC)
+COMMON_SRCS := $(wildcard $(COMMON_SRC_DIR)/*.cpp)
 
-create-dirs:
-	mkdir "$(CLIENT_OBJ_DIR)";
-	mkdir "$(CLIENT_BIN_DIR)";
-	mkdir "$(SERVER_OBJ_DIR)";
+.PHONY: all clean fclean dirs
+
+all: client server
+
+client: $(CLIENT_EXE)
+
+server: $(SERVER_EXE)
+
+$(CLIENT_EXE): $(CLIENT_OBJS) | $(CLIENT_BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $(CLIENT_OBJS) $(LDFLAGS)
+
+$(SERVER_EXE): $(SERVER_OBJS) | $(SERVER_BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $(SERVER_OBJS) $(LDFLAGS)
+
+
+$(CLIENT_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+
+$(CLIENT_BUILD_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+
+
+$(SERVER_BUILD_DIR)/%.o: $(COMMON_SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRS) -o $@;
+
+$(SERVER_BUILD_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp 
+	$(CXX) $(CXXFLAGS) $^ $(COMMON_SRCS) -o $@;
+
+
+dirs:
+	mkdir "$(CLIENT_BUILD_DIR)"; 
+	mkdir "$(CLIENT_BIN_DIR)"; 
+	mkdir "$(SERVER_BUILD_DIR)"; 
 	mkdir "$(SERVER_BIN_DIR)";
 
-$(CLIENT_EXEC): $(CLIENT_OBJ)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
-
-$(SERVER_EXEC): $(SERVER_OBJ)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
-
-$(CLIENT_OBJ_DIR)/%.o: $(CLIENT_SRC_DIR)/%.cpp $(COMMON_SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(SERVER_OBJ_DIR)/%.o: $(SERVER_SRC_DIR)/%.cpp $(COMMON_SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-
-run-client: $(CLIENT_EXEC)
-	./$(CLIENT_EXEC)
-
-run-server: $(SERVER_EXEC)
-	./$(SERVER_EXEC)
-
 clean:
-	rm -rf $(CLIENT_OBJ_DIR)/*.o $(SERVER_OBJ_DIR)/*.o $(CLIENT_EXEC) $(SERVER_EXEC)
+	rm -r $(CLIENT_BUILD_DIR) $(SERVER_BUILD_DIR);
+
+fclean: clean
+	rm -r $(CLIENT_BIN_DIR) $(SERVER_BIN_DIR);
+
+re: fclean all
