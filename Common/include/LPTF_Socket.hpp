@@ -26,8 +26,8 @@ public:
   int select(
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
-  int recv(char *buffer, int bufferSize, bool isServer);
-  int send(const std::string &message, bool isServer);
+  int recv(char *buffer, int bufferSize);
+  int send(const std::string &message);
   int close(bool isServer);
   SOCKET getSocket();
 

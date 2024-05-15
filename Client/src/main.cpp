@@ -17,7 +17,7 @@ int main()
   std::cout << "Connected to server." << std::endl;
 
   std::string message = "Hello server !";
-  if (clientSocket.send(message, false) != 0)
+  if (clientSocket.send(message) != 0)
   {
     std::cerr << "send failed" << std::endl;
     return 1;
@@ -27,7 +27,7 @@ int main()
 
   char buffer[1024];
   // int nBytes = recv(clientSocket.getSocket(), buffer, sizeof(buffer), 0);
-  int nBytes = clientSocket.recv(buffer, sizeof(buffer), false);
+  int nBytes = clientSocket.recv(buffer, sizeof(buffer));
   if (nBytes < 0)
   {
     std::cerr << "recv failed" << WSAGetLastError() << std::endl;
