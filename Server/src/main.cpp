@@ -7,7 +7,7 @@
 int main()
 {
   LPTF_Socket serverSocket;
-  serverSocket.setUpServiceServer("0.0.0.0", 12345, true);
+  serverSocket.setUpService("0.0.0.0", 12345, true);
 
   if (serverSocket.bind() != 0)
   {

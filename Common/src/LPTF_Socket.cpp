@@ -190,23 +190,7 @@ SOCKET LPTF_Socket::getSocket()
   return this->sockfd;
 }
 
-void LPTF_Socket::setUpServiceServer(const std::string &ip, int port, bool isServer)
-{
-  service.sin_family = AF_INET;
-  service.sin_port = htons(port);
-
-  if (isServer)
-  {
-    service.sin_addr.s_addr = INADDR_ANY;
-  }
-  else
-  {
-    service.sin_addr.s_addr = inet_addr(ip.c_str());
-  }
-  memset(service.sin_zero, 0, sizeof(service.sin_zero));
-}
-
-void LPTF_Socket::setUpServiceClient(const std::string &ip, int port, bool isServer)
+void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
 {
   server.sin_family = AF_INET;
   server.sin_port = htons(port);
