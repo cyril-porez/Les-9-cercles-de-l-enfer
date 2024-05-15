@@ -5,7 +5,7 @@
 #include <string>
 #include <winsock2.h>
 
-class LPTF_SOCKET
+class LPTF_Socket
 {
 private:
   SOCKET sockfd, clientSock;
@@ -13,8 +13,8 @@ private:
   std::string sendbuf;
 
 public:
-  LPTF_SOCKET();
-  ~LPTF_SOCKET();
+  LPTF_Socket();
+  ~LPTF_Socket();
   void setUpServiceClient(const std::string &ip, int port, bool isServer = false);
   void setUpServiceServer(const std::string &ip, int port, bool isServer = false);
   int acceptLPTFSocket();

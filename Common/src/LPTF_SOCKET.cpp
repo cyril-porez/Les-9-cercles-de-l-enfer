@@ -1,6 +1,6 @@
-#include "../include/LPTF_SOCKET.hpp"
+#include "../include/LPTF_Socket.hpp"
 
-LPTF_SOCKET::LPTF_SOCKET()
+LPTF_Socket::LPTF_Socket()
 {
   WSAData wsaData;
   int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -18,13 +18,13 @@ LPTF_SOCKET::LPTF_SOCKET()
   }
 }
 
-LPTF_SOCKET::~LPTF_SOCKET()
+LPTF_Socket::~LPTF_Socket()
 {
   closesocket(sockfd);
   WSACleanup();
 }
 
-int LPTF_SOCKET::acceptLPTFSocket()
+int LPTF_Socket::acceptLPTFSocket()
 {
   int adressLen = sizeof(addr);
   clientSock = accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
@@ -43,7 +43,7 @@ int LPTF_SOCKET::acceptLPTFSocket()
   }
 }
 
-int LPTF_SOCKET::bindLPTFSocket()
+int LPTF_Socket::bindLPTFSocket()
 {
   if (bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
   {
@@ -55,7 +55,7 @@ int LPTF_SOCKET::bindLPTFSocket()
   return 0;
 }
 
-int LPTF_SOCKET::connectLPTFSocket()
+int LPTF_Socket::connectLPTFSocket()
 {
   if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
   {
@@ -68,7 +68,7 @@ int LPTF_SOCKET::connectLPTFSocket()
   return 0;
 }
 
-int LPTF_SOCKET::listenLPTFSocket()
+int LPTF_Socket::listenLPTFSocket()
 {
   // On essaye d'écouter avec le socket de la classe et la taille
   // de file d'attente maximum
@@ -84,7 +84,7 @@ int LPTF_SOCKET::listenLPTFSocket()
   }
 }
 
-int LPTF_SOCKET::selectLPTFSocket(
+int LPTF_Socket::selectLPTFSocket(
     fd_set *readFds, fd_set *writeFds, fd_set *exceptFds,
     const timeval *timeout)
 {
@@ -105,7 +105,7 @@ int LPTF_SOCKET::selectLPTFSocket(
  * @param socket Le socket connecté
  * @param buffer Le buffer de données
  */
-int LPTF_SOCKET::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
+int LPTF_Socket::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
 {
   SOCKET usedSocket = isServer ? clientSock : sockfd;
   int iResult = recv(usedSocket, buffer, bufferSize, MSG_PEEK);
@@ -125,7 +125,7 @@ int LPTF_SOCKET::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
   return 0;
 }
 
-int LPTF_SOCKET::sendLPTFSocket(const std::string &message, bool isServer)
+int LPTF_Socket::sendLPTFSocket(const std::string &message, bool isServer)
 {
   SOCKET usedSocket = isServer ? clientSock : sockfd;
   if (send(usedSocket, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
@@ -137,7 +137,7 @@ int LPTF_SOCKET::sendLPTFSocket(const std::string &message, bool isServer)
   return 0;
 }
 
-int LPTF_SOCKET::closeLPTFSocket(bool isServer)
+int LPTF_Socket::closeLPTFSocket(bool isServer)
 {
   if (isServer && clientSock != INVALID_SOCKET)
   {
@@ -167,12 +167,12 @@ int LPTF_SOCKET::closeLPTFSocket(bool isServer)
   return 0;
 }
 
-SOCKET LPTF_SOCKET::getSocket()
+SOCKET LPTF_Socket::getSocket()
 {
   return this->sockfd;
 }
 
-void LPTF_SOCKET::setUpServiceServer(const std::string &ip, int port, bool isServer)
+void LPTF_Socket::setUpServiceServer(const std::string &ip, int port, bool isServer)
 {
   service.sin_family = AF_INET;
   service.sin_port = htons(port);
@@ -188,7 +188,7 @@ void LPTF_SOCKET::setUpServiceServer(const std::string &ip, int port, bool isSer
   memset(service.sin_zero, 0, sizeof(service.sin_zero));
 }
 
-void LPTF_SOCKET::setUpServiceClient(const std::string &ip, int port, bool isServer)
+void LPTF_Socket::setUpServiceClient(const std::string &ip, int port, bool isServer)
 {
   server.sin_family = AF_INET;
   server.sin_port = htons(port);
