@@ -13,11 +13,11 @@ private:
 
 public:
   LPTF_Socket();
-  LPTF_Socket(const LPTF_Socket& other);
+  LPTF_Socket(const LPTF_Socket &other);
   ~LPTF_Socket();
 
-  void setUpServiceClient(const std::string &ip, int port, bool isServer = false);
-  void setUpServiceServer(const std::string &ip, int port, bool isServer = false);
+  void setUpService(const std::string &ip, int port, bool isServer = false);
+  void setUpService(const std::string &ip, int port, bool isServer = false);
   int accept();
   int bind();
   int connect();
@@ -30,5 +30,5 @@ public:
   int close(bool isServer);
   SOCKET getSocket();
 
-  LPTF_Socket& operator=(const LPTF_Socket& other);
+  LPTF_Socket &operator=(const LPTF_Socket &other);
 };

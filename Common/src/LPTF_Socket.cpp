@@ -18,7 +18,7 @@ LPTF_Socket::LPTF_Socket()
   }
 }
 
-LPTF_Socket::LPTF_Socket(const LPTF_Socket& other) 
+LPTF_Socket::LPTF_Socket(const LPTF_Socket &other)
 {
   WSAData wsaData;
   int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -206,7 +206,7 @@ void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
   memset(server.sin_zero, 0, sizeof(service.sin_zero));
 }
 
-LPTF_Socket& LPTF_Socket::operator=(const LPTF_Socket& other) 
+LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
 {
   this->addr = other.addr;
   this->clientSock = other.clientSock;
