@@ -8,15 +8,17 @@ class LPTF_Socket
 {
 private:
   SOCKET sockfd, clientSock;
-  struct sockaddr_in service, server, addr;
+  struct sockaddr_in addr;
   std::string sendbuf;
+
+  void setUpService(const std::string &ip, int port, bool isServer = false);
 
 public:
   LPTF_Socket();
+  LPTF_Socket(const std::string &ip, int port, bool isServer);
   LPTF_Socket(const LPTF_Socket &other);
   ~LPTF_Socket();
 
-  void setUpService(const std::string &ip, int port, bool isServer = false);
   int accept();
   int bind();
   int connect();
