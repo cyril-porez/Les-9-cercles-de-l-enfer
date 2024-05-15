@@ -34,13 +34,11 @@ int LPTF_SOCKET::acceptLPTFSocket()
     std::cerr << "accept failed with error: "
               << WSAGetLastError()
               << std::endl;
-    closesocket(sockfd);
-    WSACleanup();
     return 1;
   }
   else
   {
-    wprintf(L"Client connected.\n");
+    printf("Client connected.\n");
     return 0;
   }
 }
@@ -114,17 +112,17 @@ int LPTF_SOCKET::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
   if (iResult < 0)
   {
     std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
-    return -1;
+    return 1;
   }
   else if (iResult == 0)
   {
     std::cerr << "Connection closed by peer." << std::endl;
-    return 0;
+    return 1;
   }
 
   buffer[iResult] = '\0';
   std::cout << "Data successfully received" << std::endl;
-  return iResult;
+  return 0;
 }
 
 int LPTF_SOCKET::sendLPTFSocket(const std::string &message, bool isServer)
@@ -153,7 +151,7 @@ int LPTF_SOCKET::closeLPTFSocket(bool isServer)
     std::cout << "Client socket closed successfully." << std::endl;
   }
 
-  if (sockfd != INVALID_SOCKET)
+  if (!isServer && sockfd != INVALID_SOCKET)
   {
     int iResult = closesocket(sockfd);
     if (iResult == SOCKET_ERROR)
