@@ -35,11 +35,13 @@ int LPTF_SOCKET::acceptLPTFSocket()
     std::cerr << "accept failed with error: "
               << WSAGetLastError()
               << std::endl;
+    closesocket(sockfd);
+    WSACleanup();
     return 1;
   }
   else
   {
-    printf("Client connected.\n");
+    wprintf(L"Client connected.\n");
     return 0;
   }
 }
@@ -113,17 +115,17 @@ int LPTF_SOCKET::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
   if (iResult < 0)
   {
     std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
-    return 1;
+    return -1;
   }
   else if (iResult == 0)
   {
     std::cerr << "Connection closed by peer." << std::endl;
-    return 1;
+    return 0;
   }
 
   buffer[iResult] = '\0';
   std::cout << "Data successfully received" << std::endl;
-  return 0;
+  return iResult;
 }
 
 int LPTF_SOCKET::sendLPTFSocket(const std::string &message, bool isServer)
@@ -152,7 +154,7 @@ int LPTF_SOCKET::closeLPTFSocket(bool isServer)
     std::cout << "Client socket closed successfully." << std::endl;
   }
 
-  if (!isServer && sockfd != INVALID_SOCKET)
+  if (sockfd != INVALID_SOCKET)
   {
     int iResult = closesocket(sockfd);
     if (iResult == SOCKET_ERROR)
@@ -173,7 +175,7 @@ SOCKET LPTF_SOCKET::getSocket()
   return this->sockfd;
 }
 
-void LPTF_SOCKET::setUpService(const std::string &ip, int port, bool isServer)
+void LPTF_SOCKET::setUpServiceServer(const std::string &ip, int port, bool isServer)
 {
   service.sin_family = AF_INET;
   service.sin_port = htons(port);
@@ -187,4 +189,20 @@ void LPTF_SOCKET::setUpService(const std::string &ip, int port, bool isServer)
     service.sin_addr.s_addr = inet_addr(ip.c_str());
   }
   memset(service.sin_zero, 0, sizeof(service.sin_zero));
+}
+
+void LPTF_SOCKET::setUpServiceClient(const std::string &ip, int port, bool isServer)
+{
+  server.sin_family = AF_INET;
+  server.sin_port = htons(port);
+
+  if (isServer)
+  {
+    server.sin_addr.s_addr = INADDR_ANY;
+  }
+  else
+  {
+    server.sin_addr.s_addr = inet_addr(ip.c_str());
+  }
+  memset(server.sin_zero, 0, sizeof(service.sin_zero));
 }

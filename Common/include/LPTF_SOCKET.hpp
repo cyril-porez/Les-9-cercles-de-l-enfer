@@ -15,7 +15,8 @@ private:
 public:
   LPTF_SOCKET();
   ~LPTF_SOCKET();
-  void setUpService(const std::string &ip, int port, bool isServer = false);
+  void setUpServiceClient(const std::string &ip, int port, bool isServer = false);
+  void setUpServiceServer(const std::string &ip, int port, bool isServer = false);
   int acceptLPTFSocket();
   int bindLPTFSocket();
   int connectLPTFSocket();
