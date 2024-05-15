@@ -83,12 +83,12 @@ dirs:
 
 # Nettoyage
 clean:
-	rmdir /s /Q "$(CLIENT_BUILD_DIR)"
-	rmdir /s /Q "$(SERVER_BUILD_DIR)"
-	rmdir /s /Q "$(COMMON_BUILD_DIR)"
+	rm -rf $(CLIENT_BUILD_DIR)
+	rm -rf $(SERVER_BUILD_DIR)
+	rm -rf $(COMMON_BUILD_DIR)
 
 fclean: clean
-	rmdir /s /Q "$(CLIENT_BIN_DIR)"
-	rmdir /s /Q "$(SERVER_BIN_DIR)"
+	rm -rf $(CLIENT_BIN_DIR)
+	rm -rf $(SERVER_BIN_DIR)
 
 re: fclean all
