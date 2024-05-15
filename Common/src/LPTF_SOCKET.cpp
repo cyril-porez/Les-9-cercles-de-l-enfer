@@ -24,10 +24,10 @@ LPTF_Socket::~LPTF_Socket()
   WSACleanup();
 }
 
-int LPTF_Socket::acceptLPTFSocket()
+int LPTF_Socket::accept()
 {
   int adressLen = sizeof(addr);
-  clientSock = accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
+  clientSock = ::accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
 
   if (clientSock == INVALID_SOCKET)
   {
@@ -43,9 +43,9 @@ int LPTF_Socket::acceptLPTFSocket()
   }
 }
 
-int LPTF_Socket::bindLPTFSocket()
+int LPTF_Socket::bind()
 {
-  if (bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
+  if (::bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
   {
     std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
     closesocket(sockfd);
@@ -55,9 +55,9 @@ int LPTF_Socket::bindLPTFSocket()
   return 0;
 }
 
-int LPTF_Socket::connectLPTFSocket()
+int LPTF_Socket::connect()
 {
-  if (connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
+  if (::connect(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
   {
     std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
     closesocket(sockfd);
@@ -68,11 +68,11 @@ int LPTF_Socket::connectLPTFSocket()
   return 0;
 }
 
-int LPTF_Socket::listenLPTFSocket()
+int LPTF_Socket::listen()
 {
   // On essaye d'écouter avec le socket de la classe et la taille
   // de file d'attente maximum
-  if (listen(this->sockfd, SOMAXCONN) == SOCKET_ERROR)
+  if (::listen(this->sockfd, SOMAXCONN) == SOCKET_ERROR)
   {
     std::cerr << "Listen failed : " << WSAGetLastError() << std::endl;
     return 1;
@@ -84,11 +84,11 @@ int LPTF_Socket::listenLPTFSocket()
   }
 }
 
-int LPTF_Socket::selectLPTFSocket(
+int LPTF_Socket::select(
     fd_set *readFds, fd_set *writeFds, fd_set *exceptFds,
     const timeval *timeout)
 {
-  int iResult = select(
+  int iResult = ::select(
       0, // paramètre ignoré
       readFds, writeFds, exceptFds,
       timeout);
@@ -105,10 +105,10 @@ int LPTF_Socket::selectLPTFSocket(
  * @param socket Le socket connecté
  * @param buffer Le buffer de données
  */
-int LPTF_Socket::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
+int LPTF_Socket::recv(char *buffer, int bufferSize, bool isServer)
 {
   SOCKET usedSocket = isServer ? clientSock : sockfd;
-  int iResult = recv(usedSocket, buffer, bufferSize, MSG_PEEK);
+  int iResult = ::recv(usedSocket, buffer, bufferSize, MSG_PEEK);
   if (iResult < 0)
   {
     std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
@@ -125,10 +125,10 @@ int LPTF_Socket::recvLPTFSocket(char *buffer, int bufferSize, bool isServer)
   return 0;
 }
 
-int LPTF_Socket::sendLPTFSocket(const std::string &message, bool isServer)
+int LPTF_Socket::send(const std::string &message, bool isServer)
 {
   SOCKET usedSocket = isServer ? clientSock : sockfd;
-  if (send(usedSocket, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
+  if (::send(usedSocket, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
   {
     std::cerr << "Send failed : " << WSAGetLastError() << std::endl;
     return 1;
@@ -137,7 +137,7 @@ int LPTF_Socket::sendLPTFSocket(const std::string &message, bool isServer)
   return 0;
 }
 
-int LPTF_Socket::closeLPTFSocket(bool isServer)
+int LPTF_Socket::close(bool isServer)
 {
   if (isServer && clientSock != INVALID_SOCKET)
   {

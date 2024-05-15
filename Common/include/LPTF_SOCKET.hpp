@@ -17,16 +17,16 @@ public:
   ~LPTF_Socket();
   void setUpServiceClient(const std::string &ip, int port, bool isServer = false);
   void setUpServiceServer(const std::string &ip, int port, bool isServer = false);
-  int acceptLPTFSocket();
-  int bindLPTFSocket();
-  int connectLPTFSocket();
-  int listenLPTFSocket();
-  int selectLPTFSocket(
+  int accept();
+  int bind();
+  int connect();
+  int listen();
+  int select(
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
-  int recvLPTFSocket(char *buffer, int bufferSize, bool isServer);
-  int sendLPTFSocket(const std::string &message, bool isServer);
-  int closeLPTFSocket(bool isServer);
+  int recv(char *buffer, int bufferSize, bool isServer);
+  int send(const std::string &message, bool isServer);
+  int close(bool isServer);
   SOCKET getSocket();
 };
 

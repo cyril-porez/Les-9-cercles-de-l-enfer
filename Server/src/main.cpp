@@ -6,10 +6,10 @@
 
 int main()
 {
-  LPTF_SOCKET serverSocket;
+  LPTF_Socket serverSocket;
   serverSocket.setUpServiceServer("0.0.0.0", 12345, true);
 
-  if (serverSocket.bindLPTFSocket() != 0)
+  if (serverSocket.bind() != 0)
   {
     std::cerr << "Binding Failed. " << std::endl;
     return 1;
@@ -17,18 +17,18 @@ int main()
 
   std::cout << "Binding check : " << std::endl;
 
-  if (serverSocket.listenLPTFSocket() != 0)
+  if (serverSocket.listen() != 0)
   {
     std::cerr << "Listening Failed. " << std::endl;
     return 1;
   }
 
-  while (serverSocket.acceptLPTFSocket() == 0)
+  while (serverSocket.accept() == 0)
   {
     std::cerr << "Client Connected." << std::endl;
 
     char buffer[1024];
-    if (serverSocket.recvLPTFSocket(buffer, sizeof(buffer), true) != 0)
+    if (serverSocket.recv(buffer, sizeof(buffer), true) != 0)
     {
       std::cerr << "Failed to receive data." << std::endl;
     }
@@ -36,13 +36,13 @@ int main()
     {
       std::cout << "Receive data: " << buffer << std::endl;
       std::string message = "Hello client!";
-      if (serverSocket.sendLPTFSocket(message, true))
+      if (serverSocket.send(message, true))
       {
         std::cerr << "Send Failed" << std::endl;
       }
     }
 
-    serverSocket.closeLPTFSocket(true);
+    serverSocket.close(true);
   }
 }
 
