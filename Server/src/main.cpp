@@ -23,94 +23,94 @@ int main()
     return 1;
   }
 
-  std::list<SOCKET> clientSockets;
-  fd_set readfs;
-  SOCKET maxSocket = serverSocket.getSocket();
-
-  std::cout << "Server is listening for incoming connections...." << std::endl;
-
-  while (true)
+  while (serverSocket.acceptLPTFSocket() == 0)
   {
-    FD_ZERO(&readfs);
-    FD_SET(serverSocket.getSocket(), &readfs);
+    std::cerr << "Client Connected." << std::endl;
 
-    for (SOCKET sock : clientSockets)
+    char buffer[1024];
+    if (serverSocket.recvLPTFSocket(buffer, sizeof(buffer), true) != 0)
     {
-      FD_SET(sock, &readfs);
+      std::cerr << "Failed to receive data." << std::endl;
     }
-
-    int activity = select(maxSocket + 1, &readfs, NULL, NULL, NULL);
-    if ((activity < 0) && (WSAGetLastError() != WSAEINTR))
+    else
     {
-      std::cerr << "Select error.\n";
-      continue;
-    }
-
-    if (FD_ISSET(serverSocket.getSocket(), &readfs))
-    {
-      SOCKET newSocket = serverSocket.acceptLPTFSocket();
-      if (newSocket != INVALID_SOCKET)
+      std::cout << "Receive data: " << buffer << std::endl;
+      std::string message = "Hello client!";
+      if (serverSocket.sendLPTFSocket(message, true))
       {
-        clientSockets.push_back(newSocket);
-        std::cout << "New connection accepted.\n";
+        std::cerr << "Send Failed" << std::endl;
       }
     }
 
-    for (auto it = clientSockets.begin(); it != clientSockets.end();)
-    {
-      SOCKET sock = *it;
-      if (FD_ISSET(sock, &readfs))
-      {
-        char buffer[1024];
-        int bytesRead = recv(sock, buffer, 1024, 0);
-        if (bytesRead == 0)
-        { // Client disconnected
-          closesocket(sock);
-          it = clientSockets.erase(it);
-          std::cout << "Client disconnected.\n";
-        }
-        else if (bytesRead > 0)
-        {
-          buffer[bytesRead] = '\0';
-          std::cout << "Received: " << buffer << std::endl;
-          send(sock, buffer, bytesRead, 0);
-          ++it;
-        }
-        else
-        {
-          ++it;
-        }
-      }
-      else
-      {
-        ++it;
-      }
-    }
-
-    WSACleanup();
-
-    return 0;
+    serverSocket.closeLPTFSocket(true);
   }
 }
 
-// while (serverSocket.acceptLPTFSocket() == 0)
-// {
-//   std::cerr << "Client Connected." << std::endl;
+//  std::list<SOCKET> clientSockets;
+//   fd_set readfs;
+//   SOCKET maxSocket = serverSocket.getSocket();
 
-//   char buffer[1024];
-//   if (serverSocket.recvLPTFSocket(buffer, sizeof(buffer), true) != 0)
+//   std::cout << "Server is listening for incoming connections...." << std::endl;
+
+//   while (true)
 //   {
-//     std::cerr << "Failed to receive data." << std::endl;
-//   }
-//   else
-//   {
-//     std::cout << "Receive data: " << buffer << std::endl;
-//     std::string message = "Hello client!";
-//     if (serverSocket.sendLPTFSocket(message, true))
+//     FD_ZERO(&readfs);
+//     FD_SET(serverSocket.getSocket(), &readfs);
+
+//     for (SOCKET sock : clientSockets)
 //     {
-//       std::cerr << "Send Failed" << std::endl;
+//       FD_SET(sock, &readfs);
 //     }
-//   }
 
-//   serverSocket.closeLPTFSocket(true);
-// }
+//     int activity = select(maxSocket + 1, &readfs, NULL, NULL, NULL);
+//     if ((activity < 0) && (WSAGetLastError() != WSAEINTR))
+//     {
+//       std::cerr << "Select error.\n";
+//       continue;
+//     }
+
+//     if (FD_ISSET(serverSocket.getSocket(), &readfs))
+//     {
+//       SOCKET newSocket = serverSocket.acceptLPTFSocket();
+//       if (newSocket != INVALID_SOCKET)
+//       {
+//         clientSockets.push_back(newSocket);
+//         std::cout << "New connection accepted.\n";
+//       }
+//     }
+
+//     for (auto it = clientSockets.begin(); it != clientSockets.end();)
+//     {
+//       SOCKET sock = *it;
+//       if (FD_ISSET(sock, &readfs))
+//       {
+//         char buffer[1024];
+//         int bytesRead = recv(sock, buffer, 1024, 0);
+//         if (bytesRead == 0)
+//         { // Client disconnected
+//           closesocket(sock);
+//           it = clientSockets.erase(it);
+//           std::cout << "Client disconnected.\n";
+//         }
+//         else if (bytesRead > 0)
+//         {
+//           buffer[bytesRead] = '\0';
+//           std::cout << "Received: " << buffer << std::endl;
+//           send(sock, buffer, bytesRead, 0);
+//           ++it;
+//         }
+//         else
+//         {
+//           ++it;
+//         }
+//       }
+//       else
+//       {
+//         ++it;
+//       }
+//     }
+
+//     WSACleanup();
+
+//     return 0;
+//   }
