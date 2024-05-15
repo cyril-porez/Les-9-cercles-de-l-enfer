@@ -1,5 +1,4 @@
-#ifndef LPTF_SOCKET_H
-#define LPTF_SOCKET_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -33,5 +32,3 @@ public:
 
   LPTF_Socket& operator=(const LPTF_Socket& other);
 };
-
-#endif
