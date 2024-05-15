@@ -2,7 +2,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
-#include "../../Common/include/LPTF_SOCKET.hpp"
+#include "../include/LPTF_SOCKET.hpp"
 
 int main()
 {
