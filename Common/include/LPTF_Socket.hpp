@@ -17,7 +17,6 @@ public:
   ~LPTF_Socket();
 
   void setUpService(const std::string &ip, int port, bool isServer = false);
-  void setUpService(const std::string &ip, int port, bool isServer = false);
   int accept();
   int bind();
   int connect();

@@ -63,7 +63,7 @@ int LPTF_Socket::accept()
 
 int LPTF_Socket::bind()
 {
-  if (::bind(sockfd, (SOCKADDR *)&service, sizeof(service)) == SOCKET_ERROR)
+  if (::bind(sockfd, (SOCKADDR *)&server, sizeof(server)) == SOCKET_ERROR)
   {
     std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
     closesocket(sockfd);
@@ -203,7 +203,7 @@ void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
   {
     server.sin_addr.s_addr = inet_addr(ip.c_str());
   }
-  memset(server.sin_zero, 0, sizeof(service.sin_zero));
+  memset(server.sin_zero, 0, sizeof(server.sin_zero));
 }
 
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
@@ -212,7 +212,7 @@ LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
   this->clientSock = other.clientSock;
   this->sendbuf = other.sendbuf;
   this->server = other.server;
-  this->service = other.service;
+  // this->service = other.service;
   this->sockfd = other.sockfd;
 
   return *this;
