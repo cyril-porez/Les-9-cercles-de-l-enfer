@@ -2,7 +2,7 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
-#include "../../Common/include/LPTF_SOCKET.hpp"
+#include "../../Common/include/LPTF_Socket.hpp"
 
 int main()
 {
