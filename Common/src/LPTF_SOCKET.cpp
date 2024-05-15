@@ -18,6 +18,24 @@ LPTF_Socket::LPTF_Socket()
   }
 }
 
+LPTF_Socket::LPTF_Socket(const LPTF_Socket& other) 
+{
+  WSAData wsaData;
+  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+  if (iResult != 0)
+  {
+    std::cerr << "WSAStartup failed: " << iResult << std::endl;
+    exit(1);
+  }
+
+  sockfd = other.sockfd;
+  if (sockfd == INVALID_SOCKET)
+  {
+    std::cerr << "Fail to create socket: " << WSAGetLastError() << std::endl;
+    exit(1);
+  }
+}
+
 LPTF_Socket::~LPTF_Socket()
 {
   closesocket(sockfd);
@@ -202,4 +220,16 @@ void LPTF_Socket::setUpServiceClient(const std::string &ip, int port, bool isSer
     server.sin_addr.s_addr = inet_addr(ip.c_str());
   }
   memset(server.sin_zero, 0, sizeof(service.sin_zero));
+}
+
+LPTF_Socket& LPTF_Socket::operator=(const LPTF_Socket& other) 
+{
+  this->addr = other.addr;
+  this->clientSock = other.clientSock;
+  this->sendbuf = other.sendbuf;
+  this->server = other.server;
+  this->service = other.service;
+  this->sockfd = other.sockfd;
+
+  return *this;
 }
