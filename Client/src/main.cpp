@@ -1,9 +1,13 @@
+#include <winsock2.h>
+#include <iostream>
+#include <list>
+#include <algorithm>
 #include "../../Common/include/LPTF_SOCKET.hpp"
 
 int main()
 {
   LPTF_SOCKET clientSocket;
-  clientSocket.setUpService("127.0.0.1", 12345, false);
+  clientSocket.setUpServiceClient("127.0.0.1", 12345, false);
 
   if (clientSocket.connectLPTFSocket() != 0)
   {
