@@ -1,8 +1,8 @@
-#include "LPTF_SOCKET.hpp"
 #include <winsock2.h>
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include "../../Common/include/LPTF_SOCKET.hpp"
 
 int main()
 {
