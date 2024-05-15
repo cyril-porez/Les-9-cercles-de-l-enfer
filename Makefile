@@ -9,7 +9,7 @@ CLIENT_BIN_DIR := .\Client\bin
 CLIENT_EXE := $(CLIENT_BIN_DIR)\client.exe
 
 SERVER_SRC_DIR := .\Server\src
-CLIENT_INC_DIR := .\Server\include
+SERVER_INC_DIR := .\Server\include
 SERVER_BUILD_DIR := .\Server\build
 SERVER_BIN_DIR := .\Server\bin
 SERVER_EXE := $(SERVER_BIN_DIR)\server.exe
