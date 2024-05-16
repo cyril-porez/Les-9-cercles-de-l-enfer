@@ -139,7 +139,7 @@ int LPTF_Socket::listen()
   }
   else
   {
-    printf("Listening of socket...");
+    printf("Listening of socket...\n");
     return 0;
   }
 }
