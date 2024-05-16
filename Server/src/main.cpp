@@ -6,67 +6,24 @@
 
 int main()
 {
-    LPTF_Socket serverSocket("0.0.0.0", 12345, true);
+  LPTF_Socket serverSocket("127.0.0.1", 8080, true);
+  std::cout << "Server initialized\n";
 
-    if (serverSocket.bind() != 0)
-    {
-        std::cerr << "Binding Failed. " << std::endl;
-        return 1;
-    }
+  if (serverSocket.bind() != 0)
+  {
+    std::cout << "Error: Cannot bind server\n";
+    return 1;
+  }
 
-    std::cout << "Binding check : " << std::endl;
+  if (serverSocket.listen() != 0)
+  {
+    std::cout << "Error: Server cannot listen\n";
+    return 1;
+  }
 
-    if (serverSocket.listen() != 0)
-    {
-        std::cerr << "Listening Failed. " << std::endl;
-        return 1;
-    }
+  serverSocket.handleMultipleClients();
 
-    while (true)
-    {
-        // Accepter une nouvelle connexion
-        LPTF_Socket clientSocket = serverSocket.accept();
-        if (clientSocket.getSocket() == INVALID_SOCKET)
-        {
-            std::cerr << "Accept failed." << std::endl;
-            WSACleanup();
-            return 1;
-        }
-
-        std::cout << "Client connected." << std::endl;
-
-        // Communication avec le client
-        char buffer[1024];
-        int bytesReceived = clientSocket.recv(buffer, sizeof(buffer));
-        if (bytesReceived < 0)
-        {
-            std::cerr << "recv failed." << std::endl;
-            clientSocket.close(false);
-            continue;
-        }
-        else if (bytesReceived == 0)
-        {
-            std::cerr << "Client closed the connection." << std::endl;
-            clientSocket.close(false);
-            continue;
-        }
-
-        buffer[bytesReceived] = '\0';
-        std::cout << "Received from client: " << buffer << std::endl;
-
-        std::string message = "Hello client!";
-        if (clientSocket.send(message) != 0)
-        {
-            std::cerr << "Send failed." << std::endl;
-            clientSocket.close(false);
-            continue;
-        }
-
-        std::cout << "Sent to client: " << message << std::endl;
-
-        // Fermer la connexion avec le client
-        clientSocket.close(false);
-    }
+  return 0;
 }
 
 //  std::list<SOCKET> clientSockets;
