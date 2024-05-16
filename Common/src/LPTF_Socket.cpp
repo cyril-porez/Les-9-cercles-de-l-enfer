@@ -107,8 +107,6 @@ int LPTF_Socket::bind()
 {
   if (::bind(sockfd, (SOCKADDR *)&addr, sizeof(addr)) == SOCKET_ERROR)
   {
-    std::cerr << "Bind failed : " << WSAGetLastError() << std::endl;
-    closesocket(sockfd);
     return 1;
   }
   std::cerr << "bind returned success" << std::endl;
@@ -119,9 +117,6 @@ int LPTF_Socket::connect()
 {
   if (::connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
   {
-    std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
-    closesocket(sockfd);
-    WSACleanup();
     return 1;
   }
   std::cerr << "connect returned success" << std::endl;
@@ -134,7 +129,6 @@ int LPTF_Socket::listen()
   // de file d'attente maximum
   if (::listen(this->sockfd, SOMAXCONN) == SOCKET_ERROR)
   {
-    std::cerr << "Listen failed : " << WSAGetLastError() << std::endl;
     return 1;
   }
   else
@@ -167,13 +161,11 @@ int LPTF_Socket::recv(char *buffer, int bufferSize)
   int iResult = ::recv(sockfd, buffer, bufferSize, 0);
   if (iResult < 0)
   {
-    std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
   else if (iResult == 0)
   {
-    std::cerr << "Connection closed by peer." << std::endl;
-    return 1;
+    return 2;
   }
 
   buffer[iResult] = '\0';
@@ -186,13 +178,11 @@ int LPTF_Socket::recv(SOCKET clientSock, char *buffer, int bufferSize)
   int iResult = ::recv(clientSock, buffer, bufferSize, 0);
   if (iResult < 0)
   {
-    std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
   else if (iResult == 0)
   {
-    std::cerr << "Connection closed by peer." << std::endl;
-    return 1;
+    return 2;
   }
 
   buffer[iResult] = '\0';
@@ -204,7 +194,6 @@ int LPTF_Socket::send(const std::string &message)
 {
   if (::send(sockfd, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
   {
-    std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
   std::cout << "Message sent successfully" << std::endl;
@@ -215,7 +204,6 @@ int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
 {
   if (::send(clientSock, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
   {
-    std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
   std::cout << "Message sent successfully: "  << message << std::endl;
@@ -225,7 +213,7 @@ int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
 int LPTF_Socket::close()
 {
   closesocket(sockfd);
-  std::cout << "Socket closed\n";
+  std::cout << "Socket " << sockfd << " closed\n";
   return 0;
 }
 
@@ -296,7 +284,6 @@ void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set 
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
 {
   this->addr = other.addr;
-  // this->clientSock = other.clientSock;
   this->sendbuf = other.sendbuf;
   this->sockfd = other.sockfd;
 

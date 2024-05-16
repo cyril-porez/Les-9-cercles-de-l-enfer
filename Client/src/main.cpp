@@ -10,15 +10,28 @@ int main()
 
   if (clientSocket.connect() != 0)
   {
-    return 1;
+    std::cerr << "Connection failed: " << WSAGetLastError() << std::endl;
+    WSACleanup();
   }
 
   std::string message = "Hello from client";
-  clientSocket.send(message);
+  if(clientSocket.send(message) != 0) {
+    std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
+  };
 
   char buffer[1024];
-  clientSocket.recv(buffer, sizeof(buffer));
-  std::cout << "Received from server: " << buffer << std::endl;
+  switch(clientSocket.recv(buffer, sizeof(buffer))) {
+    case 1:
+      std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+      break;
+    
+    case 2:
+      std::cerr << "Connection closed by peer." << std::endl;
+      break;
+  }
+  std::string bufferStr = std::string(buffer);
+  std::string displayMsg = bufferStr.empty() ? "NULL" : buffer;
+  std::cout << "Received from server: " << displayMsg << std::endl;
 
   clientSocket.close();
   return 0;
