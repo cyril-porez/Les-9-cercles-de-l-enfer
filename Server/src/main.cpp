@@ -6,43 +6,24 @@
 
 int main()
 {
-  LPTF_Socket serverSocket("0.0.0.0", 12345, true);
+  LPTF_Socket serverSocket("127.0.0.1", 8080, true);
+  std::cout << "Server initialized\n";
 
   if (serverSocket.bind() != 0)
   {
-    std::cerr << "Binding Failed. " << std::endl;
+    std::cout << "Error: Cannot bind server\n";
     return 1;
   }
-
-  std::cout << "Binding check : " << std::endl;
 
   if (serverSocket.listen() != 0)
   {
-    std::cerr << "Listening Failed. " << std::endl;
+    std::cout << "Error: Server cannot listen\n";
     return 1;
   }
 
-  while (serverSocket.accept() == 0)
-  {
-    std::cerr << "Client Connected." << std::endl;
+  serverSocket.handleMultipleClients();
 
-    char buffer[1024];
-    if (serverSocket.recv(buffer, sizeof(buffer), true) != 0)
-    {
-      std::cerr << "Failed to receive data." << std::endl;
-    }
-    else
-    {
-      std::cout << "Receive data: " << buffer << std::endl;
-      std::string message = "Hello client!";
-      if (serverSocket.send(message, true))
-      {
-        std::cerr << "Send Failed" << std::endl;
-      }
-    }
-
-    serverSocket.close(true);
-  }
+  return 0;
 }
 
 //  std::list<SOCKET> clientSockets;

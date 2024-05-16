@@ -36,8 +36,9 @@ LPTF_Socket::LPTF_Socket(const LPTF_Socket &other)
   }
 }
 
-LPTF_Socket::LPTF_Socket(const std::string &ip, int port, bool isServer) {
-	WSAData wsaData;
+LPTF_Socket::LPTF_Socket(const std::string &ip, int port, bool isServer)
+{
+  WSAData wsaData;
   int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
   if (iResult != 0)
   {
@@ -51,8 +52,8 @@ LPTF_Socket::LPTF_Socket(const std::string &ip, int port, bool isServer) {
     std::cerr << "Fail to create socket: " << WSAGetLastError() << std::endl;
     exit(1);
   }
-	
-	this->setUpService(ip, port, isServer);
+
+  this->setUpService(ip, port, isServer);
 }
 
 LPTF_Socket::~LPTF_Socket()
@@ -61,39 +62,43 @@ LPTF_Socket::~LPTF_Socket()
   WSACleanup();
 }
 
-void printSockAddrIn(const sockaddr_in& addr) {
-    // Récupérer l'adresse IP sous forme d'entier
-    unsigned int ip = ntohl(addr.sin_addr.s_addr);
-    // Extraire les octets de l'adresse IP
-    unsigned char octet1 = (ip >> 24) & 0xFF;
-    unsigned char octet2 = (ip >> 16) & 0xFF;
-    unsigned char octet3 = (ip >> 8) & 0xFF;
-    unsigned char octet4 = ip & 0xFF;
-    
-    // Récupérer le port
-    unsigned short port = ntohs(addr.sin_port);
-    
-    // Affichage de l'adresse IP et du port
-    std::cout << "IP: " << (int)octet1 << '.' << (int)octet2 << '.' << (int)octet3 << '.' << (int)octet4 << ", Port: " << port << std::endl;
+void printSockAddrIn(const sockaddr_in &addr)
+{
+  // Récupérer l'adresse IP sous forme d'entier
+  unsigned int ip = ntohl(addr.sin_addr.s_addr);
+  // Extraire les octets de l'adresse IP
+  unsigned char octet1 = (ip >> 24) & 0xFF;
+  unsigned char octet2 = (ip >> 16) & 0xFF;
+  unsigned char octet3 = (ip >> 8) & 0xFF;
+  unsigned char octet4 = ip & 0xFF;
+
+  // Récupérer le port
+  unsigned short port = ntohs(addr.sin_port);
+
+  // Affichage de l'adresse IP et du port
+  std::cout << "IP: " << (int)octet1 << '.' << (int)octet2 << '.' << (int)octet3 << '.' << (int)octet4 << ", Port: " << port << std::endl;
 }
 
-int LPTF_Socket::accept()
+LPTF_Socket *LPTF_Socket::accept()
 {
-	printSockAddrIn(addr);
+  printSockAddrIn(addr);
   int adressLen = sizeof(addr);
-  clientSock = ::accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
+  SOCKET clientSock = ::accept(sockfd, reinterpret_cast<sockaddr *>(&addr), &adressLen);
 
   if (clientSock == INVALID_SOCKET)
   {
     std::cerr << "accept failed with error: "
               << WSAGetLastError()
               << std::endl;
-    return 1;
+    return nullptr;
   }
   else
   {
-    printf("Client connected.\n");
-    return 0;
+    LPTF_Socket *clientSocket = new LPTF_Socket();
+    clientSocket->sockfd = clientSock;
+    clientSocket->addr = addr;
+    std::cout << "Client #" << clientSocket->sockfd << " connected" << std::endl;
+    return clientSocket;
   }
 }
 
@@ -155,17 +160,12 @@ int LPTF_Socket::select(
   return 0;
 }
 
-/**
- * @param socket Le socket connecté
- * @param buffer Le buffer de données
- */
-int LPTF_Socket::recv(char *buffer, int bufferSize, bool isServer)
+int LPTF_Socket::recv(char *buffer, int bufferSize)
 {
-  SOCKET usedSocket = isServer ? clientSock : sockfd;
-  int iResult = ::recv(usedSocket, buffer, bufferSize, MSG_PEEK);
+  int iResult = ::recv(sockfd, buffer, bufferSize, 0);
   if (iResult < 0)
   {
-    std::cout << "recvLPTFSocket() failed: " << WSAGetLastError() << std::endl;
+    std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
   else if (iResult == 0)
@@ -179,45 +179,59 @@ int LPTF_Socket::recv(char *buffer, int bufferSize, bool isServer)
   return 0;
 }
 
-int LPTF_Socket::send(const std::string &message, bool isServer)
+int LPTF_Socket::recv(SOCKET clientSock, char *buffer, int bufferSize)
 {
-  SOCKET usedSocket = isServer ? clientSock : sockfd;
-	std::cout << "CLIENTSOCK: " << clientSock << " SOCKFD: " << sockfd << std::endl;
-  if (::send(usedSocket, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
+  int iResult = ::recv(clientSock, buffer, bufferSize, 0);
+  if (iResult < 0)
   {
-    std::cerr << "Send failed : " << WSAGetLastError() << std::endl;
+    std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
     return 1;
   }
-  std::cout << "send Successfully" << std::endl;
+  else if (iResult == 0)
+  {
+    std::cerr << "Connection closed by peer." << std::endl;
+    return 1;
+  }
+
+  buffer[iResult] = '\0';
+  std::cout << "Data successfully received: " << buffer << std::endl;
   return 0;
 }
 
-int LPTF_Socket::close(bool isServer)
+int LPTF_Socket::send(const std::string &message)
 {
-  if (isServer && clientSock != INVALID_SOCKET)
+  if (::send(sockfd, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
   {
-    int result = closesocket(clientSock);
+    std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
+    return 1;
+  }
+  std::cout << "Message sent successfully" << std::endl;
+  return 0;
+}
+
+int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
+{
+  if (::send(clientSock, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
+  {
+    std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
+    return 1;
+  }
+  std::cout << "Message sent successfully: "  << message << std::endl;
+  return 0;
+}
+
+int LPTF_Socket::close()
+{
+  if (sockfd != INVALID_SOCKET)
+  {
+    int result = closesocket(sockfd);
     if (result == SOCKET_ERROR)
     {
       std::cerr << "Failed to close client socket: " << WSAGetLastError() << std::endl;
       return 1;
     }
-    clientSock = INVALID_SOCKET;
-    std::cout << "Client socket closed successfully." << std::endl;
-  }
-
-  if (!isServer && sockfd != INVALID_SOCKET)
-  {
-    int iResult = closesocket(sockfd);
-    if (iResult == SOCKET_ERROR)
-    {
-      std::cout << "closesocket failed with error: "
-                << WSAGetLastError()
-                << std::endl;
-      return 1;
-    }
     sockfd = INVALID_SOCKET;
-    std::cout << "closesocket Successfully" << std::endl;
+    std::cout << "Client socket closed successfully." << std::endl;
   }
   return 0;
 }
@@ -243,10 +257,63 @@ void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
   memset(addr.sin_zero, 0, sizeof(addr.sin_zero));
 }
 
+int LPTF_Socket::handleMultipleClients()
+{
+  fd_set readfds;
+  timeval timeout = {0, 500000}; // 0.5 seconds
+
+  while (true)
+  {
+    FD_ZERO(&readfds);
+    FD_SET(sockfd, &readfds);
+    for (SOCKET s : clientSockets)
+    {
+      FD_SET(s, &readfds);
+    }
+
+    int activity = ::select(0, &readfds, NULL, NULL, &timeout);
+
+    if (activity == SOCKET_ERROR)
+    {
+      std::cerr << "select call failed with error: " << WSAGetLastError() << std::endl;
+      return 1;
+    }
+
+    if (FD_ISSET(sockfd, &readfds))
+    {
+      // Accept new connection
+      accept();
+    }
+
+    for (size_t i = 0; i < clientSockets.size(); ++i)
+    {
+      if (FD_ISSET(clientSockets[i], &readfds))
+      {
+        char buffer[1024];
+        int result = recv(clientSockets[i], buffer, sizeof(buffer) - 1);
+        if (result != 0)
+        {
+          closesocket(clientSockets[i]);
+          clientSockets.erase(clientSockets.begin() + i);
+          --i; // Adjust index to account for the removed socket
+        }
+        else
+        {
+          // Handle the received data, e.g., echo back to client
+          std::cout << std::string(buffer) << std::endl;
+          send(clientSockets[i], std::string(buffer));
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
 {
   this->addr = other.addr;
-  this->clientSock = other.clientSock;
+  // this->clientSock = other.clientSock;
   this->sendbuf = other.sendbuf;
   this->sockfd = other.sockfd;
 
