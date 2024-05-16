@@ -11,7 +11,7 @@ int main()
 
   if (serverSocket.bind() != 0)
   {
-    std::cout << "Error: Cannot bind server\n";
+    std::cout << "Error: Server cannot bind\n";
     return 1;
   }
 
@@ -21,6 +21,7 @@ int main()
     return 1;
   }
 
+  std::cout << "Server ready to go!\n";
   serverSocket.handleMultipleClients();
 
   return 0;

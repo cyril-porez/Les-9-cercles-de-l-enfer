@@ -1,4 +1,5 @@
 #include "../include/LPTF_Socket.hpp"
+#include <string>
 
 LPTF_Socket::LPTF_Socket()
 {
@@ -161,7 +162,8 @@ int LPTF_Socket::select(
 }
 
 int LPTF_Socket::recv(char *buffer, int bufferSize)
-{
+{ 
+  std::cout << "buffer: " << buffer << std::endl;
   int iResult = ::recv(sockfd, buffer, bufferSize, 0);
   if (iResult < 0)
   {
@@ -222,23 +224,9 @@ int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
 
 int LPTF_Socket::close()
 {
-  if (sockfd != INVALID_SOCKET)
-  {
-    int result = closesocket(sockfd);
-    if (result == SOCKET_ERROR)
-    {
-      std::cerr << "Failed to close client socket: " << WSAGetLastError() << std::endl;
-      return 1;
-    }
-    sockfd = INVALID_SOCKET;
-    std::cout << "Client socket closed successfully." << std::endl;
-  }
+  closesocket(sockfd);
+  std::cout << "Socket closed\n";
   return 0;
-}
-
-SOCKET LPTF_Socket::getSocket()
-{
-  return this->sockfd;
 }
 
 void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
@@ -259,24 +247,15 @@ void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
 
 int LPTF_Socket::handleMultipleClients()
 {
-  fd_set readfds;
-  timeval timeout = {0, 500000}; // 0.5 seconds
+  fd_set readfds; // liste de file descriptors 
 
   while (true)
   {
-    FD_ZERO(&readfds);
-    FD_SET(sockfd, &readfds);
+    FD_ZERO(&readfds);  // initialise tous les fd à 0 bits
+    FD_SET(sockfd, &readfds); // initialise un fd pour qu'il prenne la valeur du fd principal
     for (SOCKET s : clientSockets)
     {
       FD_SET(s, &readfds);
-    }
-
-    int activity = ::select(0, &readfds, NULL, NULL, &timeout);
-
-    if (activity == SOCKET_ERROR)
-    {
-      std::cerr << "select call failed with error: " << WSAGetLastError() << std::endl;
-      return 1;
     }
 
     if (FD_ISSET(sockfd, &readfds))
@@ -285,9 +264,16 @@ int LPTF_Socket::handleMultipleClients()
       accept();
     }
 
+    handleClientSockets(clientSockets, readfds);
+  }
+
+  return 0;
+}
+
+void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList) {
     for (size_t i = 0; i < clientSockets.size(); ++i)
     {
-      if (FD_ISSET(clientSockets[i], &readfds))
+      if (FD_ISSET(clientSockets[i], &fdList))
       {
         char buffer[1024];
         int result = recv(clientSockets[i], buffer, sizeof(buffer) - 1);
@@ -305,9 +291,6 @@ int LPTF_Socket::handleMultipleClients()
         }
       }
     }
-  }
-
-  return 0;
 }
 
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
@@ -318,4 +301,54 @@ LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
   this->sockfd = other.sockfd;
 
   return *this;
+}
+
+
+/**
+ * GETTERS
+*/
+
+SOCKET LPTF_Socket::getSocket()
+{
+  return this->sockfd;
+}
+
+std::vector<SOCKET> LPTF_Socket::getClientSockets() 
+{
+  return this->clientSockets;
+}
+
+sockaddr_in LPTF_Socket::getAddr() 
+{
+  return this->addr;
+}
+
+std::string LPTF_Socket::getBuffer() 
+{
+  return this->sendbuf;
+}
+
+
+/**
+ * SETTERS
+*/
+
+void LPTF_Socket::setSocket(SOCKET socket)
+{
+  this->sockfd = socket;
+}
+
+void LPTF_Socket::setClientSockets(std::vector<SOCKET> clientSockets)
+{
+  this->clientSockets = clientSockets;
+}
+
+void LPTF_Socket::setAddr(sockaddr_in addr)
+{
+  this->addr = addr;
+}
+
+void LPTF_Socket::setBuffer(std::string buffer) 
+{
+  this->sendbuf = buffer;
 }
