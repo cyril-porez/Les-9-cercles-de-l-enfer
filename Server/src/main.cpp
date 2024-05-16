@@ -1,47 +1,28 @@
-#include "../../Common/include/LPTF_SOCKET.hpp"
+#include <winsock2.h>
+#include <iostream>
+#include <list>
+#include <algorithm>
+#include "../../Common/include/LPTF_Socket.hpp"
 
 int main()
 {
-  LPTF_SOCKET serverSocket;
-  serverSocket.setUpService("0.0.0.0", 12345, true);
+    LPTF_Socket serverSocket("127.0.0.1", 8080, true);
+    std::cout << "Server initialized\n";
 
-  if (serverSocket.bindLPTFSocket() != 0)
-  {
-    std::cerr << "Binding Failed. " << std::endl;
-    return 1;
-  }
-
-  std::cout << "Binding check : " << std::endl;
-
-  if (serverSocket.listenLPTFSocket() != 0)
-  {
-    std::cerr << "Listening Failed. " << std::endl;
-    return 1;
-  }
-
-  std::cout << "Server is listening for incoming connections...." << std::endl;
-
-  while (serverSocket.acceptLPTFSocket() == 0)
-  {
-    std::cerr << "Client Connected." << std::endl;
-
-    char buffer[1024];
-    if (serverSocket.recvLPTFSocket(buffer, sizeof(buffer), true) != 0)
+    if (serverSocket.bind() != 0)
     {
-      std::cerr << "Failed to receive data." << std::endl;
-    }
-    else
-    {
-      std::cout << "Receive data: " << buffer << std::endl;
-      std::string message = "Hello client!";
-      if (serverSocket.sendLPTFSocket(message, true))
-      {
-        std::cerr << "Send Failed" << std::endl;
-      }
+        std::cerr << "Error: Server cannot bind\n";
+        return 1;
     }
 
-    serverSocket.closeLPTFSocket(true);
-  }
+    if (serverSocket.listen() != 0)
+    {
+        std::cerr << "Error: Server cannot listen\n";
+        return 1;
+    }
 
-  return 0;
+    std::cout << "Server ready to go!\n";
+    serverSocket.handleMultipleClients();
+
+    return 0;
 }
