@@ -36,8 +36,21 @@ public:
   int send(const std::string &message);
   
   int close();
+
   int handleMultipleClients();
+  void handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList);
+  
+  // GETTERS
   SOCKET getSocket();
+  std::vector<SOCKET> getClientSockets();
+  sockaddr_in getAddr();
+  std::string getBuffer();
+
+  // SETTERS
+  void setSocket(SOCKET);
+  void setClientSockets(std::vector<SOCKET>);
+  void setAddr(sockaddr_in);
+  void setBuffer(std::string);
 
   LPTF_Socket &operator=(const LPTF_Socket &other);
 };
