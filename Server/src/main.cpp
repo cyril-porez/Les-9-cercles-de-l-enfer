@@ -11,13 +11,13 @@ int main()
 
   if (serverSocket.bind() != 0)
   {
-    std::cout << "Error: Server cannot bind\n";
+    std::cerr << "Error: Server cannot bind\n";
     return 1;
   }
 
   if (serverSocket.listen() != 0)
   {
-    std::cout << "Error: Server cannot listen\n";
+    std::cerr << "Error: Server cannot listen\n";
     return 1;
   }
 
