@@ -3,9 +3,11 @@
 #include <list>
 #include <algorithm>
 #include "../../Common/include/LPTF_Socket.hpp"
+#include "../../Common/include/LPTF_Packet.hpp"
 
 int main()
 {
+
     LPTF_Socket serverSocket("127.0.0.1", 8080, true);
     std::cout << "Server initialized\n";
 
