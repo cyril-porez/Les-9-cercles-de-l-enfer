@@ -163,10 +163,6 @@ int LPTF_Socket::recv(char *buffer, int bufferSize)
   {
     return 1;
   }
-  else if (iResult == 0)
-  {
-    return 2;
-  }
 
   buffer[iResult] = '\0';
   std::cout << "Data successfully received" << std::endl;
@@ -196,7 +192,7 @@ int LPTF_Socket::send(const std::string &message)
   {
     return 1;
   }
-  std::cout << "Message sent successfully" << std::endl;
+  std::cout << "Message sent successfully: " << message << std::endl;
   return 0;
 }
 
@@ -206,7 +202,7 @@ int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
   {
     return 1;
   }
-  std::cout << "Message sent successfully: "  << message << std::endl;
+  std::cout << "Message sent successfully: " << message << std::endl;
   return 0;
 }
 
@@ -241,6 +237,7 @@ int LPTF_Socket::handleMultipleClients()
   {
     FD_ZERO(&readfds);  // initialise tous les fd à 0 bits
     FD_SET(sockfd, &readfds); // initialise un fd pour qu'il prenne la valeur du fd principal
+    std::cout << clientSockets.size() << std::endl;
     for (SOCKET s : clientSockets)
     {
       FD_SET(s, &readfds);
@@ -259,6 +256,7 @@ int LPTF_Socket::handleMultipleClients()
 }
 
 void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList) {
+    std::cout << "handling client sockets..." << std::endl;
     for (size_t i = 0; i < clientSockets.size(); ++i)
     {
       if (FD_ISSET(clientSockets[i], &fdList))
@@ -269,12 +267,13 @@ void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set 
         {
           closesocket(clientSockets[i]);
           clientSockets.erase(clientSockets.begin() + i);
+          std::cout << "error receiving" << std::endl;
           --i; // Adjust index to account for the removed socket
         }
         else
         {
           // Handle the received data, e.g., echo back to client
-          std::cout << std::string(buffer) << std::endl;
+          std::cout << "buffer: " << std::string(buffer) << std::endl;
           send(clientSockets[i], std::string(buffer));
         }
       }
