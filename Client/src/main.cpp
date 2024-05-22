@@ -4,6 +4,7 @@
 #include <list>
 #include <algorithm>
 #include "../../Common/include/LPTF_Socket.hpp"
+#include "../../Common/include/LPTF_Packet.hpp"
 
 int main()
 {
@@ -38,7 +39,7 @@ int main()
 
         if (FD_ISSET(clientSocket.getSocket(), &read_set))
         {
-            char buffer[1024];
+            char buffer[8];
             int result = clientSocket.recv(buffer, sizeof(buffer) - 1);
             if (result == 1)
             {
@@ -53,6 +54,11 @@ int main()
             else
             {
                 std::cout << "Received from server: " << buffer << std::endl;
+            }
+
+            if(strcmp(buffer, "getInfo") == 0) {
+                LPTF_Packet p = LPTF_Packet();
+                p.getClientData();
             }
         }
     }
