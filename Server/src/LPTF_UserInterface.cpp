@@ -28,7 +28,7 @@ void LPTF_UserInterface::test(LPTF_Socket socket) {
 
         std::cout << input << std::endl;
 
-        socket.send(input);
+        // socket.send(input);
     }
 }
 

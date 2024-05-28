@@ -9,25 +9,25 @@
 #include <codecvt>
 #endif
 
-uint64_t htonll(uint64_t value) {
-    if (htonl(1) != 1) {
-        uint32_t hi = htonl((uint32_t)(value >> 32));
-        uint32_t lo = htonl((uint32_t)(value & 0xFFFFFFFFLL));
-        return ((uint64_t) lo << 32) | hi;
-    } else {
-        return value;
-    }
-}
+// uint64_t htonll(uint64_t value) {
+//     if (htonl(1) != 1) {
+//         uint32_t hi = htonl((uint32_t)(value >> 32));
+//         uint32_t lo = htonl((uint32_t)(value & 0xFFFFFFFFLL));
+//         return ((uint64_t) lo << 32) | hi;
+//     } else {
+//         return value;
+//     }
+// }
 
-uint64_t ntohll(uint64_t value) {
-    if (ntohl(1) != 1) {
-        uint32_t hi = ntohl((uint32_t)(value >> 32));
-        uint32_t lo = ntohl((uint32_t)(value & 0xFFFFFFFFLL));
-        return ((uint64_t) lo << 32) | hi;
-    } else {
-        return value;
-    }
-}
+// uint64_t ntohll(uint64_t value) {
+//     if (ntohl(1) != 1) {
+//         uint32_t hi = ntohl((uint32_t)(value >> 32));
+//         uint32_t lo = ntohl((uint32_t)(value & 0xFFFFFFFFLL));
+//         return ((uint64_t) lo << 32) | hi;
+//     } else {
+//         return value;
+//     }
+// }
 
 LPTF_Packet::LPTF_Packet()
 {

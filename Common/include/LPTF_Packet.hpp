@@ -5,10 +5,7 @@
 #include <unistd.h>
 #include <ctime>
 #include <iostream>
-
-uint64_t htonll(uint64_t value);
-
-uint64_t ntohll(uint64_t value);
+#include <winsock2.h>
 
 struct Message {
     uint8_t command;
@@ -17,6 +14,8 @@ struct Message {
     uint64_t timestamp;
     char payload[256];
 
+    Message() {}
+ 
     Message(uint8_t cmd, uint8_t status, const std::string& data) {
         command = cmd;
         status_code = status;
