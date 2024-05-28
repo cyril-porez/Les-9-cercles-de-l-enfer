@@ -45,7 +45,7 @@ int main()
             if (FD_ISSET(s, &read_set))
             {
                 Message tempMsg;
-                int result = serverSocket.recv(s, tempMsg.payload, tempMsg.payload_length);
+                int result = serverSocket.receiveMessage(tempMsg);
                 if (result == 1)
                 {
                     std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -64,8 +64,10 @@ int main()
                     std::string message;
                     std::cin >> message;
                     Message msg(1, 0, message);
+                    char buffer[sizeof(msg)];
+                    serializeMessage(msg, buffer); 
 
-                    if (serverSocket.send(s, tempMsg.payload) != 0)
+                    if (serverSocket.send(s, buffer, sizeof(buffer)) != 0)
                     {
                         std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
                     }

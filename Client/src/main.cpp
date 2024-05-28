@@ -22,7 +22,7 @@ int main()
     FD_ZERO(&read_set);
 
     Message tempMsg(1, 0, "Hello server!");
-    if (clientSocket.send(tempMsg.payload) != 0)
+    if (clientSocket.sendMessage(tempMsg) != 0)
     {
         std::cerr << "send failed" << std::endl;
         return 1;
@@ -39,7 +39,7 @@ int main()
 
         if (FD_ISSET(clientSocket.getSocket(), &read_set))
         {
-            int result = clientSocket.recv(tempMsg.payload, tempMsg.payload_length);
+            int result = clientSocket.receiveMessage(tempMsg);
             if (result == 1)
             {
                 std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;

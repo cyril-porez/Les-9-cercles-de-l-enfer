@@ -24,6 +24,15 @@ struct Message {
         memcpy(payload, data.c_str(), data.size());
     }
 };
+// Helper function to convert 64-bit integers to network byte order
+uint64_t htonll(uint64_t value);
+
+// Helper function to convert 64-bit integers to host byte order
+uint64_t ntohll(uint64_t value);
+
+void serializeMessage(const Message& msg, char* buffer);
+
+void deserializeMessage(const char* buffer, Message& msg);
 
 // struct MyPacket {
 //     unsigned short cmd;         // 2 bytes | Contient la commande associée

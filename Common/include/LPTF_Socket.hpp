@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../include/LPTF_Packet.hpp"
+
 #include <iostream>
 #include <string>
 #include <winsock2.h>
@@ -32,13 +34,16 @@ public:
   int recv(SOCKET clientSock, char *buffer, int bufferSize);
   int recv(char *buffer, int bufferSize);
   
-  int send(SOCKET clientSock, const std::string &message);
-  int send(const std::string &message);
+  int send(SOCKET clientSock, char* buffer, int bufferSize);
+  int send(char* buffer, int bufferSize);
   
   int close();
 
   int handleMultipleClients();
   void handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList);
+
+  int receiveMessage(Message& msg);
+  int sendMessage(Message &msg);
   
   // GETTERS
   SOCKET getSocket();
