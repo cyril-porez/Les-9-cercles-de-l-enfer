@@ -6,7 +6,7 @@
 
 int main()
 {
-    LPTF_Socket serverSocket("127.0.0.1", 8080, true);
+    LPTF_Socket serverSocket("10.10.34.36", 8080, true);
     std::cout << "Server initialized\n";
 
     if (serverSocket.bind() != 0)
