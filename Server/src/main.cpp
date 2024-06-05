@@ -34,7 +34,7 @@ int main()
     while (true)
     {
         read_set = master_set;
-        if (select(0, &read_set, nullptr, nullptr, nullptr) == SOCKET_ERROR)
+        if (serverSocket.select(&read_set, nullptr, nullptr, nullptr) == 1)
         {
             std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
             return 1;
