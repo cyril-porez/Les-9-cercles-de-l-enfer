@@ -20,16 +20,16 @@ LPTF_UserInterface::~LPTF_UserInterface() {
 
 void LPTF_UserInterface::test(LPTF_Socket socket) {
 
-    std::string input;
-    while(input != "quit") {
+    // std::string input;
+    // while(input != "quit") {
 
-        std::cout << "Entrez une commande : ";
-        std::cin >> input;
+    //     std::cout << "Entrez une commande : ";
+    //     std::cin >> input;
 
-        std::cout << input << std::endl;
+    //     std::cout << input << std::endl;
 
-        socket.send(input);
-    }
+    //     socket.send(input);
+    // }
 }
 
 

@@ -9,78 +9,59 @@
 
 int main()
 {
-    LPTF_Socket serverSocket("127.0.0.1", 8080, true);
-    std::cout << "Server initialized\n";
+  WSADATA wsaData;
+  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+  if (iResult != 0)
+  {
+    std::cerr << "WSAStartup failed with error: " << iResult << std::endl;
+    return 1;
+  }
 
-    if (serverSocket.bind() != 0)
+  LPTF_Socket serverSocket("127.0.0.1", 8080, true);
+  std::cout << "Server initialized\n";
+
+  if (serverSocket.bind() != 0)
+  {
+    std::cerr << "Error: Server cannot bind\n";
+    return 1;
+  }
+
+  if (serverSocket.listen() != 0)
+  {
+    std::cerr << "Error: Server cannot listen\n";
+    return 1;
+  }
+
+  fd_set master_set, read_set;
+  FD_ZERO(&master_set);
+  FD_ZERO(&read_set);
+  FD_SET(serverSocket.getSocket(), &master_set);
+
+  std::vector<SOCKET> clientSockets;
+
+  while (true)
+  {
+    read_set = master_set;
+    if (select(0, &read_set, nullptr, nullptr, nullptr) == SOCKET_ERROR)
     {
-        std::cerr << "Error: Server cannot bind\n";
-        return 1;
+      std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+      return 1;
     }
 
-    if (serverSocket.listen() != 0)
+    serverSocket.handleClientSockets(clientSockets, read_set);
+
+    if (FD_ISSET(serverSocket.getSocket(), &read_set))
     {
-        std::cerr << "Error: Server cannot listen\n";
-        return 1;
+      LPTF_Socket *clientSocket = serverSocket.accept();
+      if (clientSocket != nullptr)
+      {
+        SOCKET clientSock = clientSocket->getSocket();
+        clientSockets.push_back(clientSock);
+        FD_SET(clientSock, &master_set);
+      }
     }
+  }
 
-    fd_set master_set, read_set;
-    FD_ZERO(&master_set);
-    FD_ZERO(&read_set);
-    FD_SET(serverSocket.getSocket(), &master_set);
-
-    std::vector<SOCKET> clientSockets;
-
-    while (true)
-    {
-        read_set = master_set;
-        if (select(0, &read_set, nullptr, nullptr, nullptr) == SOCKET_ERROR)
-        {
-            std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
-            return 1;
-        }
-
-        for (SOCKET s : clientSockets)
-        {
-            if (FD_ISSET(s, &read_set))
-            {
-                char buffer[1024];
-                int result = serverSocket.recv(s, buffer, sizeof(buffer) - 1);
-                if (result == 1)
-                {
-                    std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
-                }
-                else if (result == 2)
-                {
-                    std::cout << "Connection closed by peer.\n";
-                    closesocket(s);
-                    FD_CLR(s, &master_set);
-                    clientSockets.erase(std::remove(clientSockets.begin(), clientSockets.end(), s), clientSockets.end());
-                }
-                else
-                {
-                    std::cout << "Received from client: " << buffer << std::endl;
-                    std::cout << "Entrez votre commande : ";
-                    std::string message;
-                    std::cin >> message;
-                    if (serverSocket.send(s, message) != 0)
-                    {
-                        std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
-                    }
-                }
-            }
-        }
-
-        if (FD_ISSET(serverSocket.getSocket(), &read_set))
-        {
-            LPTF_Socket *clientSocket = serverSocket.accept();
-            if (clientSocket != nullptr)
-            {
-                clientSockets.push_back(clientSocket->getSocket());
-                FD_SET(clientSocket->getSocket(), &master_set);
-            }
-        }
-    }
-
-    return 0;
+  WSACleanup();
+  return 0;
 }

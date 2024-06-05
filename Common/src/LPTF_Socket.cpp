@@ -1,4 +1,5 @@
 #include "../include/LPTF_Socket.hpp"
+#include "../include/LPTF_Packet.hpp"
 #include <string>
 
 LPTF_Socket::LPTF_Socket()
@@ -155,55 +156,55 @@ int LPTF_Socket::select(
   return 0;
 }
 
-int LPTF_Socket::recv(char *buffer, int bufferSize)
-{ 
-  std::cout << "buffer: " << buffer << std::endl;
-  int iResult = ::recv(sockfd, buffer, bufferSize, 0);
-  if (iResult < 0)
-  {
-    return 1;
-  }
-
-  buffer[iResult] = '\0';
-  std::cout << "Data successfully received" << std::endl;
-  return 0;
-}
-
-int LPTF_Socket::recv(SOCKET clientSock, char *buffer, int bufferSize)
+int LPTF_Socket::recv(MyPacket &packetRecv)
 {
-  int iResult = ::recv(clientSock, buffer, bufferSize, 0);
+  int iResult = ::recv(sockfd, reinterpret_cast<char *>(&packetRecv), sizeof(MyPacket), 0);
+  printf("packetRecv: a = %d, b = %s\n", packetRecv.a, packetRecv.b);
   if (iResult < 0)
   {
-    return 1;
+    return 1; // Erreur de réception
   }
   else if (iResult == 0)
   {
-    return 2;
+    return 2; // Connexion fermée par le client
   }
-
-  buffer[iResult] = '\0';
-  std::cout << "Data successfully received: " << buffer << std::endl;
-  return 0;
+  return 0; // Réception réussie
 }
 
-int LPTF_Socket::send(const std::string &message)
+int LPTF_Socket::recv(SOCKET clientSock, MyPacket &packetRecv)
 {
-  if (::send(sockfd, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
+  int iResult = ::recv(clientSock, reinterpret_cast<char *>(&packetRecv), sizeof(MyPacket), 0);
+  printf("packetRecv: a = %d, b = %s\n", packetRecv.a, packetRecv.b);
+  
+  if (iResult < 0)
   {
-    return 1;
+    return 1; // Erreur de réception
   }
-  std::cout << "Message sent successfully: " << message << std::endl;
-  return 0;
+  else if (iResult == 0)
+  {
+    return 2; // Connexion fermée par le client
+  }
+  return 0; // Réception réussie
 }
 
-int LPTF_Socket::send(SOCKET clientSock, const std::string &message)
+int LPTF_Socket::send(const MyPacket &packetSend)
 {
-  if (::send(clientSock, message.c_str(), static_cast<int>(message.length()), 0) == SOCKET_ERROR)
+  int iResult = ::send(sockfd, reinterpret_cast<const char *>(&packetSend), sizeof(MyPacket), 0);
+  if (iResult == SOCKET_ERROR)
   {
-    return 1;
+    return 1; // Erreur d'envoi
   }
-  std::cout << "Message sent successfully: " << message << std::endl;
-  return 0;
+  return 0; // Envoi réussi
+}
+
+int LPTF_Socket::send(SOCKET clientSock, const MyPacket &packetSend)
+{
+  int iResult = ::send(clientSock, reinterpret_cast<const char *>(&packetSend), sizeof(MyPacket), 0);
+  if (iResult == SOCKET_ERROR)
+  {
+    return 1; // Erreur d'envoi
+  }
+  return 0; // Envoi réussi
 }
 
 int LPTF_Socket::close()
@@ -231,11 +232,11 @@ void LPTF_Socket::setUpService(const std::string &ip, int port, bool isServer)
 
 int LPTF_Socket::handleMultipleClients()
 {
-  fd_set readfds; // liste de file descriptors 
+  fd_set readfds; // liste de file descriptors
 
   while (true)
   {
-    FD_ZERO(&readfds);  // initialise tous les fd à 0 bits
+    FD_ZERO(&readfds);        // initialise tous les fd à 0 bits
     FD_SET(sockfd, &readfds); // initialise un fd pour qu'il prenne la valeur du fd principal
     std::cout << clientSockets.size() << std::endl;
     for (SOCKET s : clientSockets)
@@ -255,29 +256,58 @@ int LPTF_Socket::handleMultipleClients()
   return 0;
 }
 
-void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList) {
-    std::cout << "handling client sockets..." << std::endl;
-    for (size_t i = 0; i < clientSockets.size(); ++i)
+void LPTF_Socket::handleClientSockets(std::vector<SOCKET> &clientSockets, fd_set &fdList)
+{
+  // Boucle à travers tous les sockets clients
+  for (size_t i = 0; i < clientSockets.size(); ++i)
+  {
+    // Vérifie si le socket courant est prêt pour la lecture
+    if (FD_ISSET(clientSockets[i], &fdList))
     {
-      if (FD_ISSET(clientSockets[i], &fdList))
+      // Prépare un paquet à envoyer au client
+      MyPacket packetSend;
+      packetSend.a = 42;
+      strcpy(packetSend.b, "ABCDEFG"); // Message à envoyer
+
+      // Envoie le paquet au client
+      if (send(clientSockets[i], packetSend) != 0)
       {
-        char buffer[1024];
-        int result = recv(clientSockets[i], buffer, sizeof(buffer) - 1);
-        if (result != 0)
-        {
-          closesocket(clientSockets[i]);
-          clientSockets.erase(clientSockets.begin() + i);
-          std::cout << "error receiving" << std::endl;
-          --i; // Adjust index to account for the removed socket
-        }
-        else
-        {
-          // Handle the received data, e.g., echo back to client
-          std::cout << "buffer: " << std::string(buffer) << std::endl;
-          send(clientSockets[i], std::string(buffer));
-        }
+        std::cerr << "send failed with error: " << WSAGetLastError() << std::endl; // Affiche un message d'erreur si l'envoi échoue
+        continue;  // Passe au prochain client
+      }
+
+      // Réception du paquet du client
+      MyPacket packetRecv;
+      int result = recv(clientSockets[i], packetRecv);
+      if (result == 1) // Si la réception échoue
+      {
+        // Affiche un message d'erreur avec le code d'erreur Windows
+        std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl; 
+        closesocket(clientSockets[i]); // Ferme le socket client
+        // Retire le socket client de la liste des descripteurs de fichiers surveillés
+        FD_CLR(clientSockets[i], &fdList);
+        // Supprime le socket client de la liste des sockets clients
+        clientSockets.erase(clientSockets.begin() + i);
+        --i; // Ajuste l'index pour compenser la suppression du socket
+      } // Si la connexion est fermée par le client
+      else if (result == 2)
+      {
+        // Indique que la connexion a été fermée par le client
+        std::cout << "Connection closed by peer.\n";
+        closesocket(clientSockets[i]); // Ferme le socket client
+        // Retire le socket client de la liste des descripteurs de fichiers surveillés
+        FD_CLR(clientSockets[i], &fdList); 
+        // Supprime le socket client de la liste des sockets clients
+        clientSockets.erase(clientSockets.begin() + i);
+        --i; // Ajuste l'index pour compenser la suppression du socket
+      }
+      else // Si des données ont été reçues correctement
+      {
+        // Affiche les données reçues du client
+        printf("Received from client: a = %d, b = %s\n", packetRecv.a, packetRecv.b);
       }
     }
+  }
 }
 
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
@@ -289,35 +319,33 @@ LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)
   return *this;
 }
 
-
 /**
  * GETTERS
-*/
+ */
 
 SOCKET LPTF_Socket::getSocket()
 {
   return this->sockfd;
 }
 
-std::vector<SOCKET> LPTF_Socket::getClientSockets() 
+std::vector<SOCKET> LPTF_Socket::getClientSockets()
 {
   return this->clientSockets;
 }
 
-sockaddr_in LPTF_Socket::getAddr() 
+sockaddr_in LPTF_Socket::getAddr()
 {
   return this->addr;
 }
 
-std::string LPTF_Socket::getBuffer() 
+std::string LPTF_Socket::getBuffer()
 {
   return this->sendbuf;
 }
 
-
 /**
  * SETTERS
-*/
+ */
 
 void LPTF_Socket::setSocket(SOCKET socket)
 {
@@ -334,7 +362,7 @@ void LPTF_Socket::setAddr(sockaddr_in addr)
   this->addr = addr;
 }
 
-void LPTF_Socket::setBuffer(std::string buffer) 
+void LPTF_Socket::setBuffer(std::string buffer)
 {
   this->sendbuf = buffer;
 }

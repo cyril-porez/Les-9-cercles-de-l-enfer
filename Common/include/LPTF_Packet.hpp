@@ -1,12 +1,16 @@
 #pragma once
 
+#include <cstdint>
+#include <cstring>
+#include <unistd.h>
+#include <ctime>
+#include <iostream>
+#include <winsock2.h>
+
+
 struct MyPacket {
-    unsigned short cmd;         // 2 bytes | Contient la commande associée
-    unsigned short status;      // 2 bytes | Contient le code de statut
-    unsigned int payloadLength; // 4 bytes | Contient la taille du payload
-    
-    unsigned long timestamp;    // 8 bytes | Contient le timestamp Unix
-    unsigned long payload;      // 8 bytes | Contient les données envoyées
+  uint8_t a;
+  char b[8];
 };
 
 enum STATUS_CODE {
