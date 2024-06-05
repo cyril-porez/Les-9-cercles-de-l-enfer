@@ -39,7 +39,7 @@ int main()
 
         if (FD_ISSET(clientSocket.getSocket(), &read_set))
         {
-            char buffer[8];
+            char buffer[1024];
             int result = clientSocket.recv(buffer, sizeof(buffer) - 1);
             if (result == 1)
             {
@@ -56,9 +56,15 @@ int main()
                 std::cout << "Received from server: " << buffer << std::endl;
             }
 
-            if(strcmp(buffer, "getInfo") == 0) {
+            if (strcmp(buffer, "getInfo") == 0)
+            {
                 LPTF_Packet p = LPTF_Packet();
                 p.getClientData();
+            }
+            else
+            {
+                std::string mess = "Commande non reconnu";
+                clientSocket.send(mess);
             }
         }
     }

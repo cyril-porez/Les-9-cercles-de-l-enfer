@@ -36,7 +36,7 @@ int main()
         read_set = master_set;
         if (serverSocket.select(&read_set, nullptr, nullptr, nullptr) == 1)
         {
-            std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+            std::cerr << "select failed\n";
             return 1;
         }
 
@@ -81,6 +81,5 @@ int main()
             }
         }
     }
-
     return 0;
 }
