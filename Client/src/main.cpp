@@ -20,14 +20,6 @@ int main()
   fd_set read_set;
   FD_ZERO(&read_set);
 
-  MyPacket packetClient;
-  packetClient.a = 24;
-  strcpy(packetClient.b, "ABCDEFG");
-  if (clientSocket.send(packetClient) != 0)
-  {
-    std::cerr << "send failed" << std::endl;
-    return 1;
-  }
 
   while (true)
   {
@@ -54,7 +46,13 @@ int main()
       }
       else
       {
-        printf("Received from server: a = %d, b = %s\n", packetRecv.a, packetRecv.b);
+        printf("Received from server:\n%s\n", packetRecv.toString());
+        MyPacket packetClient(0, SUCCESS, "Hello from client");
+        if (clientSocket.send(packetClient) != 0)
+        {
+          std::cerr << "send failed" << std::endl;
+          return 1;
+        }
       }
 
       // Éventuellement, effectuer d'autres actions en fonction des données reçues
