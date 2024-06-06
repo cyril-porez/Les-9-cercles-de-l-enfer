@@ -34,8 +34,8 @@ public:
   int recv(SOCKET clientSock, MyPacket& packet);
   int recv(MyPacket& packet);
   
-  int send(SOCKET clientSock, const MyPacket &packet);
-  int send(const MyPacket &packet);
+  int send(SOCKET clientSock, MyPacket &packet);
+  int send(MyPacket &packet);
   
   int close();
 

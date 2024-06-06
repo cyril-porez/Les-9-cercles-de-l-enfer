@@ -63,8 +63,8 @@ int main()
           // std::cout << "Entrez votre commande : ";
           // std::string message;
           // std::cin >> message;
-          MyPacket packet(0, SUCCESS, "Hello from server");
 
+          MyPacket packet(0, 0, "Hello from server!");
           if (serverSocket.send(s, packet) != 0)
           {
             std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;

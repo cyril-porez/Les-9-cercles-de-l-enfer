@@ -24,10 +24,10 @@ public:
     status_code = other.status_code;
     payload_length = other.payload_length;
     timestamp = other.timestamp;
-    strcpy(payload, other.payload);
+    memcpy(payload, other.payload, sizeof(payload));
   }
 
-  MyPacket(uint8_t cmd, uint8_t status, const std::string &data)
+  MyPacket(uint8_t cmd, uint8_t status, std::string data)
   {
     command = cmd;
     status_code = status;
@@ -44,7 +44,7 @@ public:
     res.status_code = other.status_code;
     res.payload_length = other.payload_length;
     res.timestamp = other.timestamp;
-    strcpy(res.payload, other.payload);
+    memcpy(res.payload, other.payload, sizeof(payload));
 
     return res;
   }
