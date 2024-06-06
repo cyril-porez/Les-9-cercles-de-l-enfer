@@ -40,7 +40,7 @@ public:
   int close();
 
   int handleMultipleClients();
-  void handleClientSockets(std::vector<SOCKET> &clientSockets, fd_set &fdList);
+  void handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList);
   
   // GETTERS
   SOCKET getSocket();

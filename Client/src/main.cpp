@@ -1,3 +1,4 @@
+// Client/main.cpp
 #include <winsock2.h>
 #include <iostream>
 #include <list>
@@ -20,6 +21,12 @@ int main()
   fd_set read_set;
   FD_ZERO(&read_set);
 
+  MyPacket tempMsg(0, 0, "Hello from client!");
+  if (clientSocket.send(tempMsg) != 0)
+  {
+    std::cerr << "send failed" << std::endl;
+    return 1;
+  }
 
   while (true)
   {
@@ -32,8 +39,7 @@ int main()
 
     if (FD_ISSET(clientSocket.getSocket(), &read_set))
     {
-      MyPacket packetRecv;
-      int result = clientSocket.recv(packetRecv);
+      int result = clientSocket.recv(tempMsg);
       if (result == 1)
       {
         std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -46,16 +52,14 @@ int main()
       }
       else
       {
-        printf("Received from server:\n%s\n", packetRecv.toString());
-        MyPacket packetClient(0, SUCCESS, "Hello from client");
-        if (clientSocket.send(packetClient) != 0)
-        {
-          std::cerr << "send failed" << std::endl;
-          return 1;
-        }
+        std::cout << "Received from server:\n" << tempMsg.toString() << std::endl;
       }
 
-      // Éventuellement, effectuer d'autres actions en fonction des données reçues
+      // if (strcmp(tempMsg.payload, "getInfo") == 0)
+      // {
+      //   LPTF_Packet p = LPTF_Packet();
+      //   p.getClientData();
+      // }
     }
   }
 

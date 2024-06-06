@@ -9,16 +9,8 @@
 
 int main()
 {
-  WSADATA wsaData;
-  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-  if (iResult != 0)
-  {
-    std::cerr << "WSAStartup failed with error: " << iResult << std::endl;
-    return 1;
-  }
-
   LPTF_Socket serverSocket("127.0.0.1", 8080, true);
-  std::cout << "Server initialized\n";
+  printf("Server initialized\n");
 
   if (serverSocket.bind() != 0)
   {
@@ -48,20 +40,49 @@ int main()
       return 1;
     }
 
-    serverSocket.handleClientSockets(clientSockets, read_set);
+    for (SOCKET s : clientSockets)
+    {
+      if (FD_ISSET(s, &read_set))
+      {
+        MyPacket packetRecv;
+        int result = serverSocket.recv(packetRecv);
+        if (result == 1)
+        {
+          std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
+        }
+        else if (result == 2)
+        {
+          std::cout << "Connection closed by peer.\n";
+          closesocket(s);
+          FD_CLR(s, &master_set);
+          clientSockets.erase(std::remove(clientSockets.begin(), clientSockets.end(), s), clientSockets.end());
+        }
+        else
+        {
+          // std::cout << "Received from client:\n" << packetRecv.toString() << std::endl;
+          // std::cout << "Entrez votre commande : ";
+          // std::string message;
+          // std::cin >> message;
+          MyPacket packet(0, SUCCESS, "Hello from server");
+
+          if (serverSocket.send(s, packet) != 0)
+          {
+            std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
+          }
+        }
+      }
+    }
 
     if (FD_ISSET(serverSocket.getSocket(), &read_set))
     {
       LPTF_Socket *clientSocket = serverSocket.accept();
       if (clientSocket != nullptr)
       {
-        SOCKET clientSock = clientSocket->getSocket();
-        clientSockets.push_back(clientSock);
-        FD_SET(clientSock, &master_set);
+        clientSockets.push_back(clientSocket->getSocket());
+        FD_SET(clientSocket->getSocket(), &master_set);
       }
     }
   }
 
-  WSACleanup();
   return 0;
 }

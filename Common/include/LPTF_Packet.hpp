@@ -7,55 +7,81 @@
 #include <iostream>
 #include <winsock2.h>
 
-struct MyPacket {
-    uint8_t command;
-    uint8_t status_code;
-    uint16_t payload_length;
-    uint64_t timestamp;
-    char payload[256];
+class MyPacket
+{
+public:
+  uint8_t command;
+  uint8_t status_code;
+  uint16_t payload_length;
+  uint64_t timestamp;
+  char payload[256];
 
-    MyPacket() {}
- 
-    MyPacket(uint8_t cmd, uint8_t status, const std::string& data) {
-        command = cmd;
-        status_code = status;
-        payload_length = htons(data.size());
-        timestamp = htonl(time(nullptr));
-        memcpy(payload, data.c_str(), data.size());
-    }
+  MyPacket() {}
 
-    char* toString() {
-      char* res =
-        "command:\t%d\n" \
-        "status:\t%d\n" \
-        "length:\t\%d\n" \
-        "timestamp:\t%d\n" \
+  MyPacket(const MyPacket &other)
+  {
+    command = other.command;
+    status_code = other.status_code;
+    payload_length = other.payload_length;
+    timestamp = other.timestamp;
+    strcpy(payload, other.payload);
+  }
+
+  MyPacket(uint8_t cmd, uint8_t status, const std::string &data)
+  {
+    command = cmd;
+    status_code = status;
+    payload_length = htons(data.size());
+    timestamp = htonl(time(nullptr));
+    memcpy(payload, data.c_str(), data.size());
+  }
+
+  ~MyPacket() {}
+
+  MyPacket &operator=(const MyPacket &other) {
+    MyPacket res;
+    res.command = other.command;
+    res.status_code = other.status_code;
+    res.payload_length = other.payload_length;
+    res.timestamp = other.timestamp;
+    strcpy(res.payload, other.payload);
+
+    return res;
+  }
+
+  char *toString()
+  {
+    char *res =
+        "command:\t%d\n"
+        "status:\t%d\n"
+        "length:\t\%d\n"
+        "timestamp:\t%d\n"
         "payload:\n%s\n";
-      sprintf(
+    sprintf(
         res, res,
         this->command, this->status_code, this->payload_length,
-        this->timestamp, this->payload
-      );
+        this->timestamp, this->payload);
 
-      return res;
-    }
+    return res;
+  }
 };
 
 // struct MyPacket {
 //     unsigned short cmd;         // 2 bytes | Contient la commande associée
 //     unsigned short status;      // 2 bytes | Contient le code de statut
 //     unsigned int payloadLength; // 4 bytes | Contient la taille du payload
-    
+
 //     unsigned long timestamp;    // 8 bytes | Contient le timestamp Unix
 //     unsigned long payload;      // 8 bytes | Contient les données envoyées
 // };
 
-enum STATUS_CODE {
-    SUCCESS = 0,
-    CMD_NOT_FOUND = 1,
-    TIMEOUT = 2,
-    SERVER_ERR = 3,
-    CLIENT_ERR = 4
+enum STATUS_CODE
+{
+  SUCCESS = 0,
+  CMD_NOT_FOUND = 1,
+  TIMEOUT = 2,
+  SERVER_ERR = 3,
+  CLIENT_ERR = 4
 };
 
 // enum CMD {
@@ -65,23 +91,22 @@ enum STATUS_CODE {
 //     EXEC_SYS_CMD = 0x04
 // };
 
-
 class LPTF_Packet
 {
 public:
-    // Constructors
-    LPTF_Packet();
-    LPTF_Packet(const LPTF_Packet& other);
-    ~LPTF_Packet();
+  // Constructors
+  LPTF_Packet();
+  LPTF_Packet(const LPTF_Packet &other);
+  ~LPTF_Packet();
 
-    // Builders
-    unsigned short getCMD();
-    unsigned short getStatus();
-    unsigned int getPayloadLength(unsigned long &payload);
-    unsigned long getTimestamp();
-    unsigned long getPayload();
+  // Builders
+  unsigned short getCMD();
+  unsigned short getStatus();
+  unsigned int getPayloadLength(unsigned long &payload);
+  unsigned long getTimestamp();
+  unsigned long getPayload();
 
-    void getClientData();
+  void getClientData();
 
-    LPTF_Packet& operator=(const LPTF_Packet &other);
+  LPTF_Packet &operator=(const LPTF_Packet &other);
 };
