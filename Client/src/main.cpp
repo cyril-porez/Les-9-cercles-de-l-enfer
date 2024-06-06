@@ -59,7 +59,7 @@ int main()
             if (strcmp(buffer, "getInfo") == 0)
             {
                 LPTF_Packet p = LPTF_Packet();
-                p.getClientData();
+                // p.getClientData();
             }
             else
             {

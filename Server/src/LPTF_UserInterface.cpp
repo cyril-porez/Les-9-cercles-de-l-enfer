@@ -1,27 +1,27 @@
 #include "../include/LPTF_UserInterface.hpp"
 #include "../../Common/include/LPTF_Socket.hpp"
 
-
 #include <iostream>
 #include <string>
 
-LPTF_UserInterface::LPTF_UserInterface() {
-
+LPTF_UserInterface::LPTF_UserInterface()
+{
 }
 
-LPTF_UserInterface::LPTF_UserInterface(const LPTF_UserInterface& other) {
-
+LPTF_UserInterface::LPTF_UserInterface(const LPTF_UserInterface &other)
+{
 }
 
-LPTF_UserInterface::~LPTF_UserInterface() {
-
+LPTF_UserInterface::~LPTF_UserInterface()
+{
 }
 
-
-void LPTF_UserInterface::test(LPTF_Socket socket) {
+void LPTF_UserInterface::test(LPTF_Socket socket)
+{
 
     std::string input;
-    while(input != "quit") {
+    while (input != "quit")
+    {
 
         std::cout << "Entrez une commande : ";
         std::cin >> input;
@@ -32,7 +32,6 @@ void LPTF_UserInterface::test(LPTF_Socket socket) {
     }
 }
 
-
-LPTF_UserInterface& LPTF_UserInterface::operator=(const LPTF_UserInterface& other) {
-
+LPTF_UserInterface &LPTF_UserInterface::operator=(const LPTF_UserInterface &other)
+{
 }
