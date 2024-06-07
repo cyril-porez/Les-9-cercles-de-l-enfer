@@ -46,7 +46,6 @@ MyPacket LPTF_Packet::getClientData()
 {
   int command = GET_INFO;
   int status_code = PENDING;
-  int timestamp = 0;
   char buf[256];
   std::string payload;
 
@@ -71,17 +70,14 @@ MyPacket LPTF_Packet::getClientData()
   ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
-  std::time_t time = std::time(nullptr);
-  timestamp = time;
-
   if (GetVersionEx(&osvi))
   {
-    sprintf(buf, "OS: Windows %s.%s\n", std::to_string(osvi.dwMajorVersion), std::to_string(osvi.dwMinorVersion));
+    sprintf(buf, "OS: Windows %s.%s", std::to_string(osvi.dwMajorVersion).c_str(), std::to_string(osvi.dwMinorVersion).c_str());
     payload.append(buf);
   }
 
   status_code = SUCCESS;
-  MyPacket packet(command, status_code, payload);
+  MyPacket packet((int)command, status_code, payload);
   return packet;
 }
 

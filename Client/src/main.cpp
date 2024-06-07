@@ -39,8 +39,9 @@ int main()
 
     if (FD_ISSET(clientSocket.getSocket(), &read_set))
     {
-      MyPacket serverRequest;
-      int result = clientSocket.recv(serverRequest);
+      MyPacket recvPacket;
+      int result = clientSocket.recv(recvPacket);
+      std::cout << "Packet received:" << recvPacket.toString() << std::endl;
       if (result == 1)
       {
         std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -53,11 +54,7 @@ int main()
       }
       else
       {
-        if (serverRequest.command == GET_INFO)
-        {
-          LPTF_Packet p = LPTF_Packet();
-          p.getClientData();
-        }
+        // Mettre du code coté client
       }
 
     }

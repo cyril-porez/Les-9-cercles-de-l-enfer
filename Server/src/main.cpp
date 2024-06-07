@@ -44,8 +44,8 @@ int main()
     {
       if (FD_ISSET(s, &read_set))
       {
-        MyPacket packet(0, 0, "Hello from server");
-        int result = serverSocket.recv(s, packet);
+        MyPacket recvPacket;
+        int result = serverSocket.recv(s, recvPacket);
         if (result == 1)
         {
           std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -70,7 +70,7 @@ int main()
             if (input == "getInfo")
               query = LPTF_Packet::getClientData();
             if (input == "quit")
-              break;
+              exit(0);
             else
               printf("Commande inconnue\n");
 

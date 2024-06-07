@@ -31,8 +31,8 @@ public:
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
   
-  int recv(SOCKET clientSock, MyPacket& packet);
-  int recv(MyPacket& packet);
+  int recv(SOCKET clientSock, MyPacket &packet);
+  int recv(MyPacket &packet);
   
   int send(SOCKET clientSock, MyPacket &packet);
   int send(MyPacket &packet);

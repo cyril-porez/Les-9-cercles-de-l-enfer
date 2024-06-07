@@ -1,11 +1,12 @@
 #pragma once
-  
+
 #include <cstdint>
 #include <cstring>
 #include <unistd.h>
 #include <ctime>
 #include <iostream>
 #include <winsock2.h>
+#include <sstream>
 
 class MyPacket
 {
@@ -13,8 +14,8 @@ public:
   uint8_t command;
   uint8_t status_code;
   uint16_t payload_length;
-  uint64_t timestamp;
-  char payload[256];
+  uint32_t timestamp;
+  uint8_t payload[256];
 
   MyPacket() {}
 
@@ -24,7 +25,7 @@ public:
     status_code = other.status_code;
     payload_length = other.payload_length;
     timestamp = other.timestamp;
-    memcpy(payload, other.payload, sizeof(payload));
+    memcpy(payload, other.payload, sizeof(other.payload));
   }
 
   MyPacket(uint8_t cmd, uint8_t status, std::string data)
@@ -33,63 +34,48 @@ public:
     status_code = status;
     payload_length = htons(data.size());
     timestamp = htonl(time(nullptr));
-    if (data.size() < sizeof(payload)) {
-        memcpy(payload, data.c_str(), data.size());
-        payload[data.size()] = '\0';  // Ajoute le caractère nul à la fin
-    } else {
-        // Gérer le cas où la donnée est trop grande pour le buffer
-        memcpy(payload, data.c_str(), sizeof(payload) - 1);
-        payload[sizeof(payload) - 1] = '\0';  // Assurez-vous que c'est bien terminé
-    }
+    memset(payload, 0, sizeof(payload));
+    memcpy(payload, data.data(), data.size());
   }
 
   ~MyPacket() {}
 
   MyPacket &operator=(const MyPacket &other)
   {
-    MyPacket res;
-    res.command = other.command;
-    res.status_code = other.status_code;
-    res.payload_length = other.payload_length;
-    res.timestamp = other.timestamp;
-    memcpy(res.payload, other.payload, sizeof(payload));
-
-    return res;
+    if (this != &other)
+    {
+      command = other.command;
+      status_code = other.status_code;
+      payload_length = other.payload_length;
+      timestamp = other.timestamp;
+      memcpy(payload, other.payload, sizeof(other.payload));
+    }
+    return *this;
   }
 
-  char *toString() const
+  std::string toString() const
   {
-    // Estimez la taille nécessaire pour le buffer
-    size_t bufferSize = payload_length;
-    char *res = new char[bufferSize];
+    std::stringstream ss;
 
-    std::sprintf(
-        res,
-        "command: %d\nstatus: %d\nlength: %d\ntimestamp: %lld\npayload: %s\n",
-        this->command, this->status_code, this->payload_length,
-        this->timestamp, this->payload);
+    ss << "\tcommand: " << (int)command 
+       << "\n\tstatus: " << (int)status_code 
+       << "\n\tlength: " << payload_length 
+       << "\n\ttimestamp: " << timestamp 
+       << "\n\tpayload: {\n" << payload << "\n}\n" 
+       << std::endl;
 
-    return res;
+    return ss.str();
   }
 };
 
-// struct MyPacket {
-//     unsigned short cmd;         // 2 bytes | Contient la commande associée
-//     unsigned short status;      // 2 bytes | Contient le code de statut
-//     unsigned int payloadLength; // 4 bytes | Contient la taille du payload
-
-//     unsigned long timestamp;    // 8 bytes | Contient le timestamp Unix
-//     unsigned long payload;      // 8 bytes | Contient les données envoyées
-// };
-
 enum STATUS_CODE
 {
-  PENDING = 9,
   SUCCESS = 0,
   CMD_NOT_FOUND = 1,
   TIMEOUT = 2,
   SERVER_ERR = 3,
-  CLIENT_ERR = 4
+  CLIENT_ERR = 4,
+  PENDING = 9
 };
 
 enum CMD
