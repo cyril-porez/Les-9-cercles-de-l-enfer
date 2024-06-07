@@ -257,30 +257,30 @@ int LPTF_Socket::handleMultipleClients()
   return 0;
 }
 
-void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList)
+void LPTF_Socket::handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList) 
 {
-  std::cout << "handling client sockets..." << std::endl;
-  for (size_t i = 0; i < clientSockets.size(); ++i)
-  {
-    if (FD_ISSET(clientSockets[i], &fdList))
+    std::cout << "handling client sockets..." << std::endl;
+    for (size_t i = 0; i < clientSockets.size(); ++i)
     {
-      MyPacket packet;
-      int result = recv(clientSockets[i], packet);
-      if (result != 0)
+      if (FD_ISSET(clientSockets[i], &fdList))
       {
-        closesocket(clientSockets[i]);
-        clientSockets.erase(clientSockets.begin() + i);
-        std::cout << "error receiving" << std::endl;
-        --i; // Adjust index to account for the removed socket
-      }
-      else
-      {
-        // Handle the received data, e.g., echo back to client
-        std::cout << "Data received:\n" << packet.toString() << std::endl;
-        send(clientSockets[i], packet);
+        MyPacket packetRecv;
+        int result = recv(clientSockets[i], packetRecv);
+        if (result != 0)
+        {
+          closesocket(clientSockets[i]);
+          clientSockets.erase(clientSockets.begin() + i);
+          std::cout << "error receiving" << std::endl;
+          --i; // Adjust index to account for the removed socket
+        }
+        else
+        {
+          // Handle the received data, e.g., echo back to client
+          std::cout << "buffer: " << packetRecv.toString() << std::endl;
+          send(clientSockets[i], packetRecv);
+        }
       }
     }
-  }
 }
 
 LPTF_Socket &LPTF_Socket::operator=(const LPTF_Socket &other)

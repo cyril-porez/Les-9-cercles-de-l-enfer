@@ -67,10 +67,19 @@ int main()
 
             MyPacket query;
 
-            if (input == "getInfo")
+            if (input == "getInfo") {
               query = LPTF_Packet::getClientData();
-            if (input == "quit")
+            }
+            else if (input == "help") {
+              std::cout <<
+                "COMMANDES:\n" <<
+                "\t- help:\n" << "\t  Affiche les commandes disponibles.\n" <<
+                "\t- getInfo:\n" << "\t  Affiche les informations de l'ordinateur du client (username, OS, etc.)\n" <<
+                "\t- quit:\n" << "\t  Quittez les 9 cercles.\n" << std::endl;
+            }
+            else if (input == "quit") {
               exit(0);
+            }
             else
               printf("Commande inconnue\n");
 
