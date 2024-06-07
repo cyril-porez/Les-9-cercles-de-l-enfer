@@ -1,38 +1,44 @@
 #include "../include/LPTF_UserInterface.hpp"
 #include "../../Common/include/LPTF_Socket.hpp"
 
-
 #include <iostream>
 #include <string>
 
-LPTF_UserInterface::LPTF_UserInterface() {
-
+LPTF_UserInterface::LPTF_UserInterface()
+{
 }
 
-LPTF_UserInterface::LPTF_UserInterface(const LPTF_UserInterface& other) {
-
+LPTF_UserInterface::LPTF_UserInterface(const LPTF_UserInterface &other)
+{
 }
 
-LPTF_UserInterface::~LPTF_UserInterface() {
-
+LPTF_UserInterface::~LPTF_UserInterface()
+{
 }
 
+void LPTF_UserInterface::test(LPTF_Socket socket)
+{
 
-void LPTF_UserInterface::test(LPTF_Socket socket) {
+  std::string input;
+  while (input != "quit")
+  {
+    std::cout << "Entrez une commande : ";
+    std::cin >> input;
 
-    // std::string input;
-    // while(input != "quit") {
+    MyPacket query(0, -1, input);
 
-    //     std::cout << "Entrez une commande : ";
-    //     std::cin >> input;
+    if (input == "getInfo")
+      query.command = GET_INFO;
+    else
+      query.command = 0;
 
-    //     std::cout << input << std::endl;
-
-    //     socket.send(input);
-    // }
+    if (socket.send(socket.getSocket(), query) != 0)
+    {
+      std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
+    }
+  }
 }
 
-
-LPTF_UserInterface& LPTF_UserInterface::operator=(const LPTF_UserInterface& other) {
-
+LPTF_UserInterface &LPTF_UserInterface::operator=(const LPTF_UserInterface &other)
+{
 }

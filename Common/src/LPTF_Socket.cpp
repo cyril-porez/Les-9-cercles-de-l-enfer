@@ -159,7 +159,7 @@ int LPTF_Socket::select(
 int LPTF_Socket::recv(MyPacket &packetRecv)
 {
   int iResult = ::recv(sockfd, reinterpret_cast<char *>(&packetRecv), sizeof(MyPacket), 0);
-  printf("packetRecv:\n%s\n", packetRecv.toString());
+  printf("Packet received:\n%s\n", packetRecv.toString());
   if (iResult < 0)
   {
     return 1; // Erreur de réception
@@ -174,7 +174,7 @@ int LPTF_Socket::recv(MyPacket &packetRecv)
 int LPTF_Socket::recv(SOCKET clientSock, MyPacket &packetRecv)
 {
   int iResult = ::recv(clientSock, reinterpret_cast<char *>(&packetRecv), sizeof(MyPacket), 0);
-  printf("packetRecv:\n%s\n", packetRecv.toString());
+  printf("Packet received:\n%s\n", packetRecv.toString());
 
   if (iResult < 0)
   {
@@ -189,9 +189,8 @@ int LPTF_Socket::recv(SOCKET clientSock, MyPacket &packetRecv)
 
 int LPTF_Socket::send(MyPacket &packetSend)
 {
-  // ! L'ERREUR EST ICI !
-  printf("Sent packet:\n%s\n", packetSend.payload);
-  int iResult = ::send(sockfd, reinterpret_cast<const char *>(&packetSend), sizeof(MyPacket), 0);
+  printf("Sent packet:\n%s\n", packetSend.toString());
+  int iResult = ::send(sockfd, reinterpret_cast<const char*>(&packetSend), sizeof(MyPacket), 0);
   if (iResult == SOCKET_ERROR)
   {
     return 1; // Erreur d'envoi
@@ -201,6 +200,8 @@ int LPTF_Socket::send(MyPacket &packetSend)
 
 int LPTF_Socket::send(SOCKET clientSock, MyPacket &packetSend)
 {
+  char buf[32];
+  sprintf(buf, "%p", packetSend);
   printf("Sent packet:\n%s\n", packetSend.toString());
   int iResult = ::send(clientSock, reinterpret_cast<const char *>(&packetSend), sizeof(MyPacket), 0);
   if (iResult == SOCKET_ERROR)

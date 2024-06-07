@@ -21,8 +21,8 @@ int main()
   fd_set read_set;
   FD_ZERO(&read_set);
 
-  MyPacket tempMsg(0, 0, "Hello from client!");
-  if (clientSocket.send(tempMsg) != 0)
+  MyPacket packet(0, 0, "Hello from client");
+  if (clientSocket.send(packet) != 0)
   {
     std::cerr << "send failed" << std::endl;
     return 1;
@@ -39,7 +39,8 @@ int main()
 
     if (FD_ISSET(clientSocket.getSocket(), &read_set))
     {
-      int result = clientSocket.recv(tempMsg);
+      MyPacket serverRequest;
+      int result = clientSocket.recv(serverRequest);
       if (result == 1)
       {
         std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -52,14 +53,13 @@ int main()
       }
       else
       {
-        std::cout << "Received from server:\n" << tempMsg.toString() << std::endl;
+        if (serverRequest.command == GET_INFO)
+        {
+          LPTF_Packet p = LPTF_Packet();
+          p.getClientData();
+        }
       }
 
-      // if (strcmp(tempMsg.payload, "getInfo") == 0)
-      // {
-      //   LPTF_Packet p = LPTF_Packet();
-      //   p.getClientData();
-      // }
     }
   }
 

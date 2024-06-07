@@ -5,12 +5,12 @@
 #include <algorithm>
 #include "../../Common/include/LPTF_Socket.hpp"
 #include "../../Common/include/LPTF_Packet.hpp"
-// #include "../include/LPTF_UserInterface.hpp"
+#include "../include/LPTF_UserInterface.hpp"
 
 int main()
 {
   LPTF_Socket serverSocket("127.0.0.1", 8080, true);
-  printf("Server initialized\n");
+  std::cout << "Server initialized\n";
 
   if (serverSocket.bind() != 0)
   {
@@ -44,8 +44,8 @@ int main()
     {
       if (FD_ISSET(s, &read_set))
       {
-        MyPacket packetRecv;
-        int result = serverSocket.recv(packetRecv);
+        MyPacket packet(0, 0, "Hello from server");
+        int result = serverSocket.recv(s, packet);
         if (result == 1)
         {
           std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -59,15 +59,25 @@ int main()
         }
         else
         {
-          // std::cout << "Received from client:\n" << packetRecv.toString() << std::endl;
-          // std::cout << "Entrez votre commande : ";
-          // std::string message;
-          // std::cin >> message;
-
-          MyPacket packet(0, 0, "Hello from server!");
-          if (serverSocket.send(s, packet) != 0)
+          std::string input;
+          while (true)
           {
-            std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
+            std::cout << "Entrez une commande : ";
+            std::cin >> input;
+
+            MyPacket query;
+
+            if (input == "getInfo")
+              query = LPTF_Packet::getClientData();
+            if (input == "quit")
+              break;
+            else
+              printf("Commande inconnue\n");
+
+            if (serverSocket.send(s, query) != 0)
+            {
+              std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
+            }
           }
         }
       }

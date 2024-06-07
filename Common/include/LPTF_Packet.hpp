@@ -1,5 +1,5 @@
 #pragma once
-
+  
 #include <cstdint>
 #include <cstring>
 #include <unistd.h>
@@ -33,12 +33,20 @@ public:
     status_code = status;
     payload_length = htons(data.size());
     timestamp = htonl(time(nullptr));
-    memcpy(payload, data.c_str(), data.size());
+    if (data.size() < sizeof(payload)) {
+        memcpy(payload, data.c_str(), data.size());
+        payload[data.size()] = '\0';  // Ajoute le caractère nul à la fin
+    } else {
+        // Gérer le cas où la donnée est trop grande pour le buffer
+        memcpy(payload, data.c_str(), sizeof(payload) - 1);
+        payload[sizeof(payload) - 1] = '\0';  // Assurez-vous que c'est bien terminé
+    }
   }
 
   ~MyPacket() {}
 
-  MyPacket &operator=(const MyPacket &other) {
+  MyPacket &operator=(const MyPacket &other)
+  {
     MyPacket res;
     res.command = other.command;
     res.status_code = other.status_code;
@@ -49,16 +57,15 @@ public:
     return res;
   }
 
-  char *toString()
+  char *toString() const
   {
-    char *res =
-        "command:\t%d\n"
-        "status:\t%d\n"
-        "length:\t\%d\n"
-        "timestamp:\t%d\n"
-        "payload:\n%s\n";
-    sprintf(
-        res, res,
+    // Estimez la taille nécessaire pour le buffer
+    size_t bufferSize = payload_length;
+    char *res = new char[bufferSize];
+
+    std::sprintf(
+        res,
+        "command: %d\nstatus: %d\nlength: %d\ntimestamp: %lld\npayload: %s\n",
         this->command, this->status_code, this->payload_length,
         this->timestamp, this->payload);
 
@@ -77,6 +84,7 @@ public:
 
 enum STATUS_CODE
 {
+  PENDING = 9,
   SUCCESS = 0,
   CMD_NOT_FOUND = 1,
   TIMEOUT = 2,
@@ -84,15 +92,19 @@ enum STATUS_CODE
   CLIENT_ERR = 4
 };
 
-// enum CMD {
-//     GET_INFO = 0x01,
-//     TOGGLE_KEYLOG = 0x02,
-//     GET_PROC_LIST = 0x03,
-//     EXEC_SYS_CMD = 0x04
-// };
+enum CMD
+{
+  GET_INFO = 0x01,
+  TOGGLE_KEYLOG = 0x02,
+  GET_PROC_LIST = 0x03,
+  EXEC_SYS_CMD = 0x04
+};
 
 class LPTF_Packet
 {
+private:
+  MyPacket packet;
+
 public:
   // Constructors
   LPTF_Packet();
@@ -103,10 +115,10 @@ public:
   unsigned short getCMD();
   unsigned short getStatus();
   unsigned int getPayloadLength(unsigned long &payload);
-  unsigned long getTimestamp();
+  static unsigned long getTimestamp();
   unsigned long getPayload();
 
-  void getClientData();
+  static MyPacket getClientData();
 
   LPTF_Packet &operator=(const LPTF_Packet &other);
 };
