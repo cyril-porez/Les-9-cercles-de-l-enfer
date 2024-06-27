@@ -2,3 +2,4 @@
 #include "K6S233IZAZ/moc_clientlistitem.cpp"
 #include "K6S233IZAZ/moc_homescreen.cpp"
 #include "K6S233IZAZ/moc_mainwindow.cpp"
+#include "UVLADIE3JM/moc_keylogbutton.cpp"

@@ -1,8 +1,10 @@
 ServerQt_autogen/timestamp: \
+	C:/Qt/6.7.2/mingw_64/include/QtCore/QStringListModel \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/q20functional.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/q20memory.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/q20type_traits.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/q23utility.h \
+	C:/Qt/6.7.2/mingw_64/include/QtCore/qabstractitemmodel.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qalgorithms.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qanystringview.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qarraydata.h \
@@ -84,6 +86,7 @@ ServerQt_autogen/timestamp: \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringconverter_base.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringfwd.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlist.h \
+	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlistmodel.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringliteral.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringmatcher.h \
 	C:/Qt/6.7.2/mingw_64/include/QtCore/qstringtokenizer.h \
@@ -141,8 +144,10 @@ ServerQt_autogen/timestamp: \
 	C:/Qt/6.7.2/mingw_64/include/QtGui/qtransform.h \
 	C:/Qt/6.7.2/mingw_64/include/QtGui/qwindowdefs.h \
 	C:/Qt/6.7.2/mingw_64/include/QtGui/qwindowdefs_win.h \
+	C:/Qt/6.7.2/mingw_64/include/QtWidgets/QFrame \
 	C:/Qt/6.7.2/mingw_64/include/QtWidgets/QMainWindow \
 	C:/Qt/6.7.2/mingw_64/include/QtWidgets/QWidget \
+	C:/Qt/6.7.2/mingw_64/include/QtWidgets/qframe.h \
 	C:/Qt/6.7.2/mingw_64/include/QtWidgets/qmainwindow.h \
 	C:/Qt/6.7.2/mingw_64/include/QtWidgets/qsizepolicy.h \
 	C:/Qt/6.7.2/mingw_64/include/QtWidgets/qtabwidget.h \
@@ -527,9 +532,12 @@ ServerQt_autogen/timestamp: \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/headers/mainwindow.h \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/clientlistitem.cpp \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/homescreen.cpp \
+	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/keylogbutton.cpp \
+	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/keylogbutton.h \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/main.cpp \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/mainwindow.cpp \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/clientlistitem.ui \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/homescreen.ui \
+	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/keylogbutton.ui \
 	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/mainwindow.ui \
 	C:/Qt/Tools/CMake_64/bin/cmake.exe

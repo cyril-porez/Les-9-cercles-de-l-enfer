@@ -89,6 +89,14 @@ build CMakeFiles/ServerQt.dir/src/clientlistitem.cpp.obj: CXX_COMPILER__ServerQt
   OBJECT_DIR = CMakeFiles\ServerQt.dir
   OBJECT_FILE_DIR = CMakeFiles\ServerQt.dir\src
 
+build CMakeFiles/ServerQt.dir/src/keylogbutton.cpp.obj: CXX_COMPILER__ServerQt_unscanned_Debug C$:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/src/keylogbutton.cpp || cmake_object_order_depends_target_ServerQt
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\ServerQt.dir\src\keylogbutton.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/include -isystem C:/Qt/6.7.2/mingw_64/include/QtCore -isystem C:/Qt/6.7.2/mingw_64/include -isystem C:/Qt/6.7.2/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.7.2/mingw_64/include/QtWidgets -isystem C:/Qt/6.7.2/mingw_64/include/QtGui
+  OBJECT_DIR = CMakeFiles\ServerQt.dir
+  OBJECT_FILE_DIR = CMakeFiles\ServerQt.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target ServerQt
@@ -97,7 +105,7 @@ build CMakeFiles/ServerQt.dir/src/clientlistitem.cpp.obj: CXX_COMPILER__ServerQt
 #############################################
 # Link the executable ServerQt.exe
 
-build ServerQt.exe: CXX_EXECUTABLE_LINKER__ServerQt_Debug CMakeFiles/ServerQt.dir/ServerQt_autogen/mocs_compilation.cpp.obj CMakeFiles/ServerQt.dir/src/main.cpp.obj CMakeFiles/ServerQt.dir/src/mainwindow.cpp.obj CMakeFiles/ServerQt.dir/src/homescreen.cpp.obj CMakeFiles/ServerQt.dir/src/clientlistitem.cpp.obj | C$:/Qt/6.7.2/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.2/mingw_64/lib/libQt6Gui.a C$:/Qt/6.7.2/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.2/mingw_64/lib/libQt6EntryPoint.a || ServerQt_autogen ServerQt_autogen_timestamp_deps
+build ServerQt.exe: CXX_EXECUTABLE_LINKER__ServerQt_Debug CMakeFiles/ServerQt.dir/ServerQt_autogen/mocs_compilation.cpp.obj CMakeFiles/ServerQt.dir/src/main.cpp.obj CMakeFiles/ServerQt.dir/src/mainwindow.cpp.obj CMakeFiles/ServerQt.dir/src/homescreen.cpp.obj CMakeFiles/ServerQt.dir/src/clientlistitem.cpp.obj CMakeFiles/ServerQt.dir/src/keylogbutton.cpp.obj | C$:/Qt/6.7.2/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.7.2/mingw_64/lib/libQt6Gui.a C$:/Qt/6.7.2/mingw_64/lib/libQt6Core.a C$:/Qt/6.7.2/mingw_64/lib/libQt6EntryPoint.a || ServerQt_autogen ServerQt_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = C:/Qt/6.7.2/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.7.2/mingw_64/lib/libQt6Gui.a  C:/Qt/6.7.2/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.7.2/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
@@ -184,7 +192,7 @@ build ServerQt_autogen_timestamp_deps: phony
 #############################################
 # Utility command for ServerQt_autogen
 
-build ServerQt_autogen: phony CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp ServerQt_autogen_timestamp_deps
+build ServerQt_autogen: phony CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h ServerQt_autogen/include/src/ui_keylogbutton.h ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp ServerQt_autogen_timestamp_deps
 
 
 #############################################
@@ -201,7 +209,7 @@ build ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp | ${cmake
 #############################################
 # Phony custom command for CMakeFiles\ServerQt_autogen
 
-build CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h | ${cmake_ninja_workdir}CMakeFiles/ServerQt_autogen ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_mainwindow.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_homescreen.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_clientlistitem.h: phony ServerQt_autogen/timestamp || ServerQt_autogen_timestamp_deps
+build CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h ServerQt_autogen/include/src/ui_keylogbutton.h | ${cmake_ninja_workdir}CMakeFiles/ServerQt_autogen ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_mainwindow.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_homescreen.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_clientlistitem.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_keylogbutton.h: phony ServerQt_autogen/timestamp || ServerQt_autogen_timestamp_deps
 
 # =============================================================================
 # Target aliases.

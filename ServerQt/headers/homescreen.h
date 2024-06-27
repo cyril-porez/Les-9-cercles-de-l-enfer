@@ -2,6 +2,7 @@
 #define HOMESCREEN_H
 
 #include <QWidget>
+#include <QStringListModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,10 +18,11 @@ public:
 
 private:
     Ui::HomeScreen *ui;
+    QStringListModel *model;
 
 signals:
 private slots:
-    void on_tabWidget_tabBarClicked(int index);
+    void on_listView_clicked(const QModelIndex &index);
 };
 
 #endif // HOMESCREEN_H
