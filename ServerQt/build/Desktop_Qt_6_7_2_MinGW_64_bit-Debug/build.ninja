@@ -184,7 +184,7 @@ build ServerQt_autogen_timestamp_deps: phony
 #############################################
 # Utility command for ServerQt_autogen
 
-build ServerQt_autogen: phony CMakeFiles/ServerQt_autogen ServerQt_autogen/include/ui/ui_mainwindow.h ServerQt_autogen/include/ui/ui_homescreen.h ServerQt_autogen/include/ui/ui_clientlistitem.h ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp ServerQt_autogen_timestamp_deps
+build ServerQt_autogen: phony CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp ServerQt_autogen_timestamp_deps
 
 
 #############################################
@@ -201,7 +201,7 @@ build ServerQt_autogen/timestamp ServerQt_autogen/mocs_compilation.cpp | ${cmake
 #############################################
 # Phony custom command for CMakeFiles\ServerQt_autogen
 
-build CMakeFiles/ServerQt_autogen ServerQt_autogen/include/ui/ui_mainwindow.h ServerQt_autogen/include/ui/ui_homescreen.h ServerQt_autogen/include/ui/ui_clientlistitem.h | ${cmake_ninja_workdir}CMakeFiles/ServerQt_autogen ${cmake_ninja_workdir}ServerQt_autogen/include/ui/ui_mainwindow.h ${cmake_ninja_workdir}ServerQt_autogen/include/ui/ui_homescreen.h ${cmake_ninja_workdir}ServerQt_autogen/include/ui/ui_clientlistitem.h: phony ServerQt_autogen/timestamp || ServerQt_autogen_timestamp_deps
+build CMakeFiles/ServerQt_autogen ServerQt_autogen/include/src/ui_mainwindow.h ServerQt_autogen/include/src/ui_homescreen.h ServerQt_autogen/include/src/ui_clientlistitem.h | ${cmake_ninja_workdir}CMakeFiles/ServerQt_autogen ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_mainwindow.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_homescreen.h ${cmake_ninja_workdir}ServerQt_autogen/include/src/ui_clientlistitem.h: phony ServerQt_autogen/timestamp || ServerQt_autogen_timestamp_deps
 
 # =============================================================================
 # Target aliases.

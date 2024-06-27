@@ -1,4 +1,4 @@
-#include "homescreen.h"
+#include "../headers/homescreen.h"
 #include "ui_homescreen.h"
 
 HomeScreen::HomeScreen(QWidget *parent)
@@ -11,3 +11,9 @@ HomeScreen::HomeScreen(QWidget *parent)
 HomeScreen::~HomeScreen() {
     delete ui;
 }
+
+void HomeScreen::on_tabWidget_tabBarClicked(int index)
+{
+
+}
+

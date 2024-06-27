@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-0cbae514a6da665648a2.json",
+					"jsonFile" : "directory-.-Debug-64b5b7617da680120085.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ServerQt::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ServerQt-Debug-4628e8b540f3ff2dff92.json",
+					"jsonFile" : "target-ServerQt-Debug-1e8243fd63d454cf43df.json",
 					"name" : "ServerQt",
 					"projectIndex" : 0
 				},

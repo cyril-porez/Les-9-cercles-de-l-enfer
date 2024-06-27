@@ -3,10 +3,11 @@
 
 #include <QWidget>
 
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class ClientListItem;
 }
-
+QT_END_NAMESPACE
 class ClientListItem : public QWidget
 {
     Q_OBJECT

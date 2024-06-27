@@ -1,4 +1,4 @@
-#include "clientlistitem.h"
+#include "../headers/clientlistitem.h"
 #include "ui_clientlistitem.h"
 
 ClientListItem::ClientListItem(QWidget *parent)

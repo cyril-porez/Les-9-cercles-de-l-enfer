@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "../headers/mainwindow.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -7,8 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
     homeScreen(new HomeScreen(this))
 {
     ui->setupUi(this);
-
-    setCentralWidget(homeScreen);
 }
 
 MainWindow::~MainWindow()
