@@ -19,6 +19,8 @@ private:
     Ui::HomeScreen *ui;
 
 signals:
+private slots:
+    void on_tabWidget_tabBarClicked(int index);
 };
 
 #endif // HOMESCREEN_H

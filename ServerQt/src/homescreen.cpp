@@ -11,9 +11,3 @@ HomeScreen::HomeScreen(QWidget *parent)
 HomeScreen::~HomeScreen() {
     delete ui;
 }
-
-void HomeScreen::on_tabWidget_tabBarClicked(int index)
-{
-
-}
-
