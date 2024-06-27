@@ -1,0 +1,9 @@
+# ninja log v6
+6	567	7411809674994971	ServerQt_autogen/timestamp	6a1d3399c5b7467f
+6	567	7411809674994971	ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
+575	2589	7411809675727696	CMakeFiles/ServerQt.dir/src/main.cpp.obj	8cffb56121482652
+6	567	7411809674994971	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/timestamp	6a1d3399c5b7467f
+572	2697	7411809675691719	CMakeFiles/ServerQt.dir/ServerQt_autogen/mocs_compilation.cpp.obj	21d0995da6617856
+580	2713	7411809675749359	CMakeFiles/ServerQt.dir/src/mainwindow.cpp.obj	bdb1710af8e069c7
+6	567	7411809674994971	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
+2713	2891	7411809697117835	ServerQt.exe	b4ea80967822e52d
