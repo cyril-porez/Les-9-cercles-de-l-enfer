@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     homeScreen(new HomeScreen(this))
 {
     ui->setupUi(this);
+    setCentralWidget(homeScreen);
 }
 
 MainWindow::~MainWindow()
