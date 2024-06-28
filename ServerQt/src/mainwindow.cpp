@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     homeScreen(new HomeScreen(this))
 {
+    setWindowTitle("Les 9 cercles");
     ui->setupUi(this);
     setCentralWidget(homeScreen);
 }
