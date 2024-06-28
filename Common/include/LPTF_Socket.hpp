@@ -4,6 +4,7 @@
 #include <string>
 #include <winsock2.h>
 #include <vector>
+#include "LPTF_Packet.hpp"
 
 class LPTF_Socket
 {
@@ -29,16 +30,16 @@ public:
       fd_set *readFds, fd_set *writeFds,
       fd_set *execptFds, const timeval *timeout);
 
-  int recv(SOCKET clientSock, char *buffer, int bufferSize);
-  int recv(char *buffer, int bufferSize);
+  int recv(SOCKET clientSock, Message &message);
+  // int recv(char *buffer, int bufferSize);
 
-  int send(SOCKET clientSock, const std::string &message);
-  int send(const std::string &message);
+  int send(SOCKET clientSock, const Message &message);
+  // int send(const std::string &message);
 
   int close();
 
-  int handleMultipleClients();
-  void handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList);
+  // int handleMultipleClients();
+  // void handleClientSockets(std::vector<SOCKET> clientSockets, fd_set fdList);
 
   // GETTERS
   SOCKET getSocket();

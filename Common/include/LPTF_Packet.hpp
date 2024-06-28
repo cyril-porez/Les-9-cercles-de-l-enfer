@@ -19,6 +19,19 @@ struct Message
     Message() {}
 
     Message(uint8_t cmd, uint8_t status, const std::string &data);
+
+    Message &operator=(const Message &other)
+    {
+        if (this != &other)
+        {
+            command = other.command;
+            status_code = other.status_code;
+            payload_length = other.payload_length;
+            timestamp = other.timestamp;
+            memcpy(payload, other.payload, sizeof(payload));
+        }
+        return *this;
+    }
 };
 
 enum STATUS_CODE
@@ -60,8 +73,8 @@ public:
 
     LPTF_Packet &operator=(const LPTF_Packet &other);
 
-    std::vector<uint8_t> serializeMessage(const Message &msg);
-    Message deserializeMessage(const std::vector<uint8_t> &buffer);
+    static std::vector<uint8_t> serializeMessage(const Message &msg);
+    static Message deserializeMessage(const std::vector<uint8_t> &buffer);
 
 private:
     // uint64_t ntohll(uint64_t value);
