@@ -13,3 +13,4 @@ HEADERS += \
     headers/mainwindow.h \
     headers/homescreen.h \
     headers/clientlistitem.h
+
