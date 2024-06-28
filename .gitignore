@@ -42,7 +42,7 @@
 *.la
 *.lai
 *.so
-*.so.*
+.so.
 *.dll
 *.dylib
 
@@ -53,9 +53,9 @@ object_script.*.Debug
 /.qmake.cache
 /.qmake.stash
 *.pro.user
-*.pro.user.*
+.pro.user.
 *.qbs.user
-*.qbs.user.*
+.qbs.user.
 *.moc
 moc_*.cpp
 moc_*.h
@@ -64,7 +64,7 @@ ui_*.h
 *.qmlc
 *.jsc
 Makefile*
-*build-*
+build-
 *.qm
 *.prl
 
@@ -76,7 +76,7 @@ target_wrapper.*
 
 # QtCreator Qml
 *.qmlproject.user
-*.qmlproject.user.*
+.qmlproject.user.
 
 # QtCreator CMake
 CMakeLists.txt.user*
@@ -85,6 +85,6 @@ CMakeLists.txt.user*
 compile_commands.json
 
 # QtCreator local machine specific files for imported projects
-*creator.user*
+creator.user
 
 *_qmlcache.qrc
