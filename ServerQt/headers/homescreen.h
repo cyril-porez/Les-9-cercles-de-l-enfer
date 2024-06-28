@@ -23,6 +23,7 @@ private:
 signals:
 private slots:
     void on_listView_clicked(const QModelIndex &index);
+    void on_tabWidget_tabCloseRequested(int index);
 };
 
 #endif // HOMESCREEN_H

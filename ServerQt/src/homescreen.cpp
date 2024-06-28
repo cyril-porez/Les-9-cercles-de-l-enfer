@@ -41,3 +41,9 @@ void HomeScreen::on_listView_clicked(const QModelIndex &index)
     ui->tabWidget->addTab(newTab, userName);
 }
 
+
+void HomeScreen::on_tabWidget_tabCloseRequested(int index)
+{
+    ui->tabWidget->removeTab(index);
+}
+
