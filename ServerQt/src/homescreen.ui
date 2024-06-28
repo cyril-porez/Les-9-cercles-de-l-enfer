@@ -104,12 +104,12 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="tabsClosable">
     <bool>true</bool>
    </property>
-   <widget class="QWidget" name="tab">
+   <widget class="QWidget" name="tab_1">
     <property name="sizePolicy">
      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
       <horstretch>0</horstretch>
