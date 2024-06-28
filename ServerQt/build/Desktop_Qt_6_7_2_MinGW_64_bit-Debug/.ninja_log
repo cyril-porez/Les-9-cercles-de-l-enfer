@@ -1,0 +1,19 @@
+# ninja log v6
+25	227	7411932807612970	ServerQt_autogen/timestamp	6a1d3399c5b7467f
+962	4109	7411927215527432	CMakeFiles/ServerQt.dir/src/main.cpp.obj	8cffb56121482652
+25	227	7411932807612970	ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
+228	2360	7411932809639664	CMakeFiles/ServerQt.dir/src/mainwindow.cpp.obj	bdb1710af8e069c7
+958	4129	7411927215486172	CMakeFiles/ServerQt.dir/ServerQt_autogen/mocs_compilation.cpp.obj	21d0995da6617856
+25	227	7411932807612970	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/timestamp	6a1d3399c5b7467f
+25	227	7411932807612970	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
+2915	3170	7411932836515042	ServerQt.exe	73c307d370f3ca0e
+7	29	7411906020272111	CMakeFiles/clean.additional	baedbe210acaa455
+29	39	7411906020526067	clean	577b940aee94fbd7
+8	778	7411933686075714	build.ninja	94365196f107377
+233	2372	7411932809699794	CMakeFiles/ServerQt.dir/src/clientlistitem.cpp.obj	cc28b6fd63f365d8
+231	2915	7411932809669776	CMakeFiles/ServerQt.dir/src/homescreen.cpp.obj	1941077cf4b1a141
+8	650	7411933686075714	build.ninja	94365196f107377
+26	175	7411933687644921	ServerQt_autogen/timestamp	6a1d3399c5b7467f
+26	175	7411933687644921	ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
+26	175	7411933687644921	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/timestamp	6a1d3399c5b7467f
+26	175	7411933687644921	C:/Users/chezt/OneDrive/Documents/CPP_Projects/Les-9-cercles-de-l-enfer/ServerQt/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/ServerQt_autogen/mocs_compilation.cpp	6a1d3399c5b7467f
