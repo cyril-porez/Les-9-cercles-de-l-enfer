@@ -5,10 +5,21 @@
 #include <algorithm>
 #include "../../Common/include/LPTF_Socket.hpp"
 #include "../../Common/include/LPTF_Packet.hpp"
-#include "../include/LPTF_UserInterface.hpp"
 
 int main()
 {
+    LPTF_Packet LPTFPacket;
+    Message msg(1, 200, "Test payload");
+
+    std::vector<uint8_t> serializedMsg = LPTFPacket.serializeMessage(msg);
+    Message deserialized_msg = LPTFPacket.deserializeMessage(serializedMsg);
+
+    std::cout << "Command: " << static_cast<int>(deserialized_msg.command) << std::endl;
+    std::cout << "Status Code: " << static_cast<int>(deserialized_msg.status_code) << std::endl;
+    std::cout << "Payload: " << deserialized_msg.payload << std::endl;
+
+    std::cout << "-------Fint test serialization-------" << std::endl;
+
     LPTF_Socket serverSocket("127.0.0.1", 8080, true);
     std::cout << "Server initialized\n";
 
@@ -34,9 +45,9 @@ int main()
     while (true)
     {
         read_set = master_set;
-        if (select(0, &read_set, nullptr, nullptr, nullptr) == SOCKET_ERROR)
+        if (serverSocket.select(&read_set, nullptr, nullptr, nullptr) == 1)
         {
-            std::cerr << "select failed with error: " << WSAGetLastError() << std::endl;
+            std::cerr << "select failed\n";
             return 1;
         }
 
@@ -45,7 +56,8 @@ int main()
             if (FD_ISSET(s, &read_set))
             {
                 char buffer[1024];
-                int result = serverSocket.recv(s, buffer, sizeof(buffer) - 1);
+                Message receiveMessage;
+                int result = serverSocket.recv(s, receiveMessage);
                 if (result == 1)
                 {
                     std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -63,7 +75,8 @@ int main()
                     std::cout << "Entrez votre commande : ";
                     std::string message;
                     std::cin >> message;
-                    if (serverSocket.send(s, message) != 0)
+                    Message msg(1, 200, message);
+                    if (serverSocket.send(s, msg) != 0)
                     {
                         std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
                     }
@@ -81,6 +94,5 @@ int main()
             }
         }
     }
-
     return 0;
 }

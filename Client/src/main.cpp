@@ -21,8 +21,8 @@ int main()
     fd_set read_set;
     FD_ZERO(&read_set);
 
-    std::string message = "Hello server!";
-    if (clientSocket.send(message) != 0)
+    Message message(1, 200, "Hello server!");
+    if (clientSocket.send(clientSocket.getSocket(), message) != 0)
     {
         std::cerr << "send failed" << std::endl;
         return 1;
@@ -39,8 +39,9 @@ int main()
 
         if (FD_ISSET(clientSocket.getSocket(), &read_set))
         {
-            char buffer[8];
-            int result = clientSocket.recv(buffer, sizeof(buffer) - 1);
+            // char buffer[1024];
+            Message receiveMessage;
+            int result = clientSocket.recv(clientSocket.getSocket(), receiveMessage);
             if (result == 1)
             {
                 std::cerr << "recv failed with error: " << WSAGetLastError() << std::endl;
@@ -53,12 +54,23 @@ int main()
             }
             else
             {
-                std::cout << "Received from server: " << buffer << std::endl;
+                std::cout << "Received from server:" << std::endl;
+                std::cout << "Command: " << static_cast<int>(receiveMessage.command) << std::endl;
+                std::cout << "Status Code: " << static_cast<int>(receiveMessage.status_code) << std::endl;
+                std::cout << "Payload Length: " << receiveMessage.payload_length << std::endl;
+                std::cout << "Timestamp: " << receiveMessage.timestamp << std::endl;
+                std::cout << "Payload: " << receiveMessage.payload << std::endl;
             }
 
-            if(strcmp(buffer, "getInfo") == 0) {
+            if (strcmp(receiveMessage.payload, "getInfo") == 0)
+            {
                 LPTF_Packet p = LPTF_Packet();
-                p.getClientData();
+                // p.getClientData();
+            }
+            else
+            {
+                Message responseMess(1, 400, "Commande non reconnu");
+                clientSocket.send(clientSocket.getSocket(), responseMess);
             }
         }
     }
