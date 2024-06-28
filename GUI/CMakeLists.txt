@@ -13,10 +13,16 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+    src/main.cpp
+    src/mainwindow.cpp
+    src/homescreen.cpp
+    src/clientlistitem.cpp
+    headers/mainwindow.h
+    headers/homescreen.h
+    headers/clientlistitem.h
+    src/mainwindow.ui
+    src/homescreen.ui
+    src/clientlistitem.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
