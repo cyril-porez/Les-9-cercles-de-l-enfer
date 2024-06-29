@@ -8,18 +8,6 @@
 
 int main()
 {
-    LPTF_Packet LPTFPacket;
-    Message msg(1, 200, "Test payload");
-
-    std::vector<uint8_t> serializedMsg = LPTFPacket.serializeMessage(msg);
-    Message deserialized_msg = LPTFPacket.deserializeMessage(serializedMsg);
-
-    std::cout << "Command: " << static_cast<int>(deserialized_msg.command) << std::endl;
-    std::cout << "Status Code: " << static_cast<int>(deserialized_msg.status_code) << std::endl;
-    std::cout << "Payload: " << deserialized_msg.payload << std::endl;
-
-    std::cout << "-------Fint test serialization-------" << std::endl;
-
     LPTF_Socket serverSocket("127.0.0.1", 8080, true);
     std::cout << "Server initialized\n";
 
@@ -55,7 +43,7 @@ int main()
         {
             if (FD_ISSET(s, &read_set))
             {
-                char buffer[1024];
+                // char buffer[1024];
                 Message receiveMessage;
                 int result = serverSocket.recv(s, receiveMessage);
                 if (result == 1)
@@ -71,11 +59,11 @@ int main()
                 }
                 else
                 {
-                    std::cout << "Received from client: " << buffer << std::endl;
+                    std::cout << "[" << receiveMessage.timestamp << "]" << "Status : " << static_cast<int>(receiveMessage.status_code) << " Payload : " << receiveMessage.payload << std::endl;
                     std::cout << "Entrez votre commande : ";
-                    std::string message;
-                    std::cin >> message;
-                    Message msg(1, 200, message);
+                    int command;
+                    std::cin >> command;
+                    Message msg(command, 200, "commande information client");
                     if (serverSocket.send(s, msg) != 0)
                     {
                         std::cerr << "send failed with error: " << WSAGetLastError() << std::endl;
