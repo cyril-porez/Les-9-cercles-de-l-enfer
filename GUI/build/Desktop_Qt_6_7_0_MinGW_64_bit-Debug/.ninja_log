@@ -1,0 +1,11 @@
+# ninja log v5
+1	861	7412950578087401	GUI_autogen/timestamp	7eb6da1e4847ae9d
+1	861	7412950578087401	GUI_autogen/mocs_compilation.cpp	7eb6da1e4847ae9d
+1	861	7412950578087401	C:/Users/c/Desktop/cpp/Les-9-cercles-de-l-enfer/GUI/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/GUI_autogen/timestamp	7eb6da1e4847ae9d
+1	861	7412950578087401	C:/Users/c/Desktop/cpp/Les-9-cercles-de-l-enfer/GUI/build/Desktop_Qt_6_7_0_MinGW_64_bit-Debug/GUI_autogen/mocs_compilation.cpp	7eb6da1e4847ae9d
+874	4283	7412950612902953	CMakeFiles/GUI.dir/GUI_autogen/mocs_compilation.cpp.obj	625540e4604574e9
+893	4319	7412950613112969	CMakeFiles/GUI.dir/src/clientlistitem.cpp.obj	2eca027032f5530d
+888	4321	7412950613132986	CMakeFiles/GUI.dir/src/mainwindow.cpp.obj	3bc79e7a19e1f3ce
+878	4323	7412950613332968	CMakeFiles/GUI.dir/src/main.cpp.obj	5a088bfc83823d
+883	6836	7412950638618981	CMakeFiles/GUI.dir/src/homescreen.cpp.obj	614e0d5d98e72014
+6839	7243	7412950642631717	GUI.exe	69ff3d72ce751d39
