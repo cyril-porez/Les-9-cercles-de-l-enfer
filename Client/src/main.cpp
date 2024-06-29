@@ -9,6 +9,7 @@
 int main()
 {
     LPTF_Socket clientSocket("127.0.0.1", 8080, false);
+    LPTF_Packet packet;
 
     if (clientSocket.connect() != 0)
     {
@@ -62,14 +63,20 @@ int main()
                 std::cout << "Payload: " << receiveMessage.payload << std::endl;
             }
 
-            if (strcmp(receiveMessage.payload, "getInfo") == 0)
+            if (static_cast<int>(receiveMessage.command) == 1)
             {
-                LPTF_Packet p = LPTF_Packet();
-                // p.getClientData();
+                std::string dataClient = packet.getClientData();
+
+                Message message(0, 200, dataClient);
+                if (clientSocket.send(clientSocket.getSocket(), message) != 0)
+                {
+                    std::cerr << "send failed" << std::endl;
+                    return 1;
+                }
             }
             else
             {
-                Message responseMess(1, 400, "Commande non reconnu");
+                Message responseMess(1, 005, "Commande non reconnu");
                 clientSocket.send(clientSocket.getSocket(), responseMess);
             }
         }

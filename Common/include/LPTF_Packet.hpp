@@ -11,7 +11,7 @@
 struct Message
 {
     uint8_t command;         // 1 byte | Contient la commande associée
-    uint8_t status_code;     // 1 byte | Contient le code de statut
+    uint16_t status_code;    // 1 byte | Contient le code de statut
     uint16_t payload_length; // 2 bytes | Contient la taille du payload
     uint64_t timestamp;      // 8 bytes | Contient le timestamp Unix
     char payload[256];       // 256 bytes | Contient les données envoyées
@@ -66,12 +66,14 @@ public:
     // unsigned short getCMD();
     // unsigned short getStatus();
     // unsigned int getPayloadLength(unsigned long &payload);
-    // unsigned long getTimestamp();
-    // unsigned long getPayload();
+    unsigned long getTimestamp();
+    unsigned long getPayload();
 
-    // void getClientData();
+    std::string getClientData();
+    void keystate();
 
-    LPTF_Packet &operator=(const LPTF_Packet &other);
+    LPTF_Packet &
+    operator=(const LPTF_Packet &other);
 
     static std::vector<uint8_t> serializeMessage(const Message &msg);
     static Message deserializeMessage(const std::vector<uint8_t> &buffer);

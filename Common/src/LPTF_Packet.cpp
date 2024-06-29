@@ -6,6 +6,9 @@
 #include <string>
 #include <ctime>
 #include <cstdint>
+#include <Lmcons.h>
+#include <sstream>
+
 #ifdef UNICODE
 #include <locale>
 #include <codecvt>
@@ -24,61 +27,53 @@ LPTF_Packet::~LPTF_Packet()
 {
 }
 
-// unsigned short LPTF_Packet::getCMD()
-// {
-// }
+unsigned long LPTF_Packet::getTimestamp()
+{
+    return std::time(nullptr);
+}
 
-// unsigned short LPTF_Packet::getStatus()
-// {
-// }
+std::string LPTF_Packet::getClientData()
+{
+    char computerName[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD computerNameSize = sizeof(computerName);
+    if (GetComputerNameA(computerName, &computerNameSize))
+    {
+        std::cout << "Nom du PC : " << computerName << std::endl;
+    }
+    else
+    {
+        std::cerr << "Erreur lors de la récupération du nom du PC." << std::endl;
+    }
 
-// unsigned int LPTF_Packet::getPayloadLength(unsigned long &payload)
-// {
-// }
+    char userName[UNLEN + 1];
+    DWORD userNameSize = sizeof(userName);
+    if (GetUserNameA(userName, &userNameSize))
+    {
+        std::cout << "Nom de l'utilisateur : " << userName << std::endl;
+    }
+    else
+    {
+        std::cerr << "Erreur lors de la récupération du nom de l'utilisateur." << std::endl;
+    }
 
-// unsigned long LPTF_Packet::getTimestamp()
-// {
-//     return std::time(nullptr);
-// }
+    OSVERSIONINFO osvi;
+    ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+    osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
-// unsigned long LPTF_Packet::getPayload()
-// {
-// }
+    // std::time_t time = std::time(nullptr);
 
-// void LPTF_Packet::getClientData()
-// {
-//     this->.cmd = GET_INFO; // On sait quelle commande le serveur à envoyé
+    if (GetVersionEx(&osvi))
+    {
+        std::cout << "OS: Windows " << std::to_string(osvi.dwMajorVersion) << "." << std::to_string(osvi.dwMinorVersion) << std::endl;
+        std::cout << "Timestamp: " << getTimestamp() << std::endl;
+    }
 
-//     TCHAR infoBuf[15000];
-//     DWORD bufCharCount = 15000;
-
-//     if (!GetComputerName(infoBuf, &bufCharCount))
-//     {
-//         this->packet.status = CLIENT_ERR; // Erreur client
-//     }
-//     std::cout << "Computer name: " << infoBuf << std::endl;
-
-//     if (!GetUserName(infoBuf, &bufCharCount))
-//     {
-//         this->packet.status = CLIENT_ERR; // Erreur client
-//     }
-//     std::cout << "User name: " << infoBuf << std::endl;
-
-//     OSVERSIONINFO osvi;
-//     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
-//     osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-//     std::time_t time = std::time(nullptr);
-//     this->packet.timestamp = time;
-
-//     if (GetVersionEx(&osvi))
-//     {
-//         std::cout << "OS: Windows " << std::to_string(osvi.dwMajorVersion) << "." << std::to_string(osvi.dwMinorVersion) << std::endl;
-//         std::cout << "Timestamp: " << getTimestamp() << std::endl;
-//     }
-
-//     this->packet.status = SUCCESS;
-// }
+    std::stringstream ss;
+    ss << computerName << " ";
+    ss << userName << " ";
+    ss << "Windows" << osvi.dwMajorVersion << "." << osvi.dwMinorVersion;
+    return ss.str();
+}
 
 // LPTF_Packet &LPTF_Packet::operator=(const LPTF_Packet &other)
 // {
