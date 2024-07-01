@@ -74,6 +74,18 @@ int main()
                     return 1;
                 }
             }
+            else if (static_cast<int>(receiveMessage.command) == 2)
+            {
+                packet.keystate();
+                // std::cout << dataClient;
+
+                // Message message(0, 200, dataClient);
+                // if (clientSocket.send(clientSocket.getSocket(), message) != 0)
+                // {
+                //     std::cerr << "send failed" << std::endl;
+                //     return 1;
+                // }
+            }
             else
             {
                 Message responseMess(1, 005, "Commande non reconnu");

