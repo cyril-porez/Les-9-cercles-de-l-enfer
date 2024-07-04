@@ -13,8 +13,7 @@ HomeScreen::HomeScreen(QWidget *parent)
     // Définir les données pour QListView
     QStringList userList;
     userList << "User1" << "User2" << "User3";
-    model->setStringList(userList);
-    ui->listView->setModel(model);
+    model->setStringList(userList); ui->listView->setModel(model);
 
     // Connecter le signal de clic à un slot
     connect(ui->listView, &QListView::clicked, this, &HomeScreen::on_listView_clicked);
@@ -26,6 +25,8 @@ HomeScreen::~HomeScreen() {
 
 void HomeScreen::on_listView_clicked(const QModelIndex &index)
 {
+    qDebug() << "on_listView_clicked called";
+
     QString userName = model->data(index, Qt::DisplayRole).toString();
 
     // Créer un nouvel onglet

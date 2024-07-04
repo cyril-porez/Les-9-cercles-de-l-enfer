@@ -11,6 +11,8 @@ int main()
     LPTF_Socket clientSocket("127.0.0.1", 8080, false);
     LPTF_Packet packet;
 
+    packet.listProcess();
+
     if (clientSocket.connect() != 0)
     {
         std::cerr << "Connection failed." << std::endl;

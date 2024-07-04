@@ -9,6 +9,7 @@
 #include <Lmcons.h>
 #include <sstream>
 #include <unordered_map>
+#include <tlhelp32.h>
 
 #ifdef UNICODE
 #include <locale>
@@ -140,6 +141,37 @@ void LPTF_Packet::keystate()
         // Petite pause pour éviter une utilisation excessive du CPU
         Sleep(10); // Pause de 10 millisecondes
     }
+}
+
+void LPTF_Packet::listProcess()
+{
+    HANDLE hProcessSnap;
+    PROCESSENTRY32 pe32;
+
+    // Prendre un instantané des processus en cours
+    hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hProcessSnap == INVALID_HANDLE_VALUE)
+    {
+        std::cerr << "CreateToolhelp32Snapshot (of processes) failed.\n";
+        return;
+    }
+
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+
+    // Récupérer les informations sur le premier processus
+    if (!Process32First(hProcessSnap, &pe32))
+    {
+        std::cerr << "Process32First failed.\n";
+        CloseHandle(hProcessSnap);
+        return;
+    }
+
+    do
+    {
+        std::wcout << L"Process name: " << pe32.szExeFile << L" | Process ID: " << pe32.th32ProcessID << std::endl;
+    } while (Process32Next(hProcessSnap, &pe32));
+
+    CloseHandle(hProcessSnap);
 }
 
 // LPTF_Packet &LPTF_Packet::operator=(const LPTF_Packet &other)
